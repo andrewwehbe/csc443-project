@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 260" role="img" aria-label="Floor plan of Group Room E2">
+  <rect width="400" height="260" fill="#e8eef4"/>
+  <path d="M14 14 H386 V246 H260 M200 246 H14 Z" fill="none" stroke="#3e566e" stroke-width="8" stroke-linejoin="round"/>
+  <rect x="130" y="22" width="140" height="9" rx="2" fill="#ffffff" stroke="#3e566e" stroke-width="2"/>
+  <rect x="22" y="85" width="9" height="90" rx="2" fill="#1f2937"/>
+  <rect x="186" y="131" width="8" height="10" rx="2" fill="#fde68a" stroke="#92400e" stroke-width="1"/>
+  <rect x="206" y="131" width="8" height="10" rx="2" fill="#fde68a" stroke="#92400e" stroke-width="1"/>
+  <rect x="139" y="70" width="30" height="22" rx="7" fill="#4d6a86"/>
+  <rect x="185" y="70" width="30" height="22" rx="7" fill="#4d6a86"/>
+  <rect x="231" y="70" width="30" height="22" rx="7" fill="#4d6a86"/>
+  <rect x="139" y="180" width="30" height="22" rx="7" fill="#4d6a86"/>
+  <rect x="185" y="180" width="30" height="22" rx="7" fill="#4d6a86"/>
+  <rect x="231" y="180" width="30" height="22" rx="7" fill="#4d6a86"/>
+  <rect x="119" y="101" width="162" height="70" rx="10" fill="#8fa9c2"/>
+</svg>
