@@ -21,6 +21,20 @@ export function dateKey(iso) {
   return `${date.getFullYear()}-${month}-${day}`;
 }
 
+// 'HH:MM' in local time, the format an <input type="time"> uses: timeKey(iso) = '09:30'.
+export function timeKey(iso) {
+  const date = new Date(iso);
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  return `${hours}:${minutes}`;
+}
+
+// The other way round: a 'YYYY-MM-DD' day and an 'HH:MM' time, both local, as an ISO string.
+// toISO('2026-11-06', '14:00') = 6 November 2026 at 14:00 here.
+export function toISO(day, hhmm) {
+  return new Date(`${day}T${hhmm}`).toISOString();
+}
+
 // '14:00'
 export function formatTime(iso) {
   return new Date(iso).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
