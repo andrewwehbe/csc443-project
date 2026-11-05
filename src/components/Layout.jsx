@@ -3,6 +3,7 @@ import DemoBar from './DemoBar.jsx';
 
 const links = [
   { to: '/', label: 'Home' },
+  { to: '/bookings/new', label: 'Book a room' },
 ];
 
 // The persistent shell: the demo bar, header and footer stay, the page inside <Outlet /> changes with the route.
