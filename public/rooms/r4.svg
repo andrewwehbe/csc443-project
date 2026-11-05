@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 260" role="img" aria-label="Floor plan of Study Room 201">
+  <rect width="400" height="260" fill="#f6efe4"/>
+  <path d="M14 14 H386 V246 H260 M200 246 H14 Z" fill="none" stroke="#7a5c3e" stroke-width="8" stroke-linejoin="round"/>
+  <rect x="186" y="131" width="8" height="10" rx="2" fill="#fde68a" stroke="#92400e" stroke-width="1"/>
+  <rect x="206" y="131" width="8" height="10" rx="2" fill="#fde68a" stroke="#92400e" stroke-width="1"/>
+  <rect x="185" y="77" width="30" height="22" rx="7" fill="#8a6a4a"/>
+  <rect x="185" y="173" width="30" height="22" rx="7" fill="#8a6a4a"/>
+  <rect x="165" y="108" width="70" height="56" rx="10" fill="#c9a27a"/>
+</svg>

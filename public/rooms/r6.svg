@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 260" role="img" aria-label="Floor plan of Study Room 210">
+  <rect width="400" height="260" fill="#f6efe4"/>
+  <path d="M14 14 H386 V246 H260 M200 246 H14 Z" fill="none" stroke="#7a5c3e" stroke-width="8" stroke-linejoin="round"/>
+  <rect x="130" y="22" width="140" height="9" rx="2" fill="#ffffff" stroke="#7a5c3e" stroke-width="2"/>
+  <rect x="22" y="85" width="9" height="90" rx="2" fill="#1f2937"/>
+  <rect x="186" y="131" width="8" height="10" rx="2" fill="#fde68a" stroke="#92400e" stroke-width="1"/>
+  <rect x="206" y="131" width="8" height="10" rx="2" fill="#fde68a" stroke="#92400e" stroke-width="1"/>
+  <rect x="116" y="70" width="30" height="22" rx="7" fill="#8a6a4a"/>
+  <rect x="162" y="70" width="30" height="22" rx="7" fill="#8a6a4a"/>
+  <rect x="208" y="70" width="30" height="22" rx="7" fill="#8a6a4a"/>
+  <rect x="254" y="70" width="30" height="22" rx="7" fill="#8a6a4a"/>
+  <rect x="116" y="180" width="30" height="22" rx="7" fill="#8a6a4a"/>
+  <rect x="162" y="180" width="30" height="22" rx="7" fill="#8a6a4a"/>
+  <rect x="208" y="180" width="30" height="22" rx="7" fill="#8a6a4a"/>
+  <rect x="254" y="180" width="30" height="22" rx="7" fill="#8a6a4a"/>
+  <rect x="96" y="101" width="208" height="70" rx="10" fill="#c9a27a"/>
+</svg>
