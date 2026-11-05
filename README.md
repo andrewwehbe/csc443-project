@@ -51,7 +51,7 @@ Each member owns two surfaces (a surface is a screen with its own route). This t
 | Elio El Koussa | | |
 | Njteh Balian | | |
 | Marc Hebbo | | |
-| Andrew Wehbe | New booking (`/bookings/new`), Edit booking (`/bookings/:bookingId/edit`) | `src/pages/NewBookingPage.jsx`, `src/pages/EditBookingPage.jsx`, `src/components/booking-form/` (`BookingForm.jsx`, `Field.jsx`, `HouseRulesCheck.jsx`, `RoomDaySchedule.jsx`, `BookingSummary.jsx`, `Notice.jsx`, `UnsavedChangesDialog.jsx`), `src/lib/bookingForm.js` and its test, `src/hooks/useUnsavedChangesWarning.js` |
+| Andrew Wehbe | New booking (`/bookings/new`), Edit booking (`/bookings/:bookingId/edit`) | `src/pages/NewBookingPage.jsx`, `src/pages/EditBookingPage.jsx`, `src/components/BookingForm.jsx`, `src/components/Field.jsx`, `src/lib/bookingForm.js` and its test, `src/hooks/useUnsavedChangesWarning.js` |
 
 Shared files: `src/main.jsx` (router), `src/App.jsx` (routes), `src/components/Layout.jsx` (navigation shell). Andrew also wrote the shared code listed below.
 
@@ -71,7 +71,7 @@ Use these paths so the screens can link to each other (a booking links to its ro
 | `/bookings/new` | New booking | Andrew |
 | `/bookings/:bookingId/edit` | Edit booking | Andrew |
 
-**Opening the booking form already filled in.** Add any of `room`, `date`, `start` and `end` to the address, for example `/bookings/new?room=r3&date=2026-11-12&start=14:00&end=15:30`. With a start and no end, the end is one hour later. Use this for "Book this room" on a room page and for a free slot on the availability timeline. Values that are missing or malformed are left empty.
+**Opening the booking form already filled in.** Add any of `room`, `date`, `start` and `end` to the address, for example `/bookings/new?room=r3&date=2026-11-12&start=14:00&end=15:30`. Use this for "Book this room" on a room page and for a free slot on the availability timeline. A value that does not fit shows up as an error in the form.
 
 **Edit links.** An owner's Edit button goes to `/bookings/<id>/edit`. That page asks `isOwner` itself, so another student or someone signed out who opens the link sees a message instead of the form.
 
@@ -105,7 +105,7 @@ Everything below is used by several surfaces. Change it only after telling the t
 `npm test` runs every `*.test.js` file with Node's built-in test runner:
 
 - `src/lib/bookingRules.test.js`: overlaps (touching ends allowed, one minute refused), the 2-hour limit, one booking per day, editing a booking without clashing with itself, and the seed data.
-- `src/lib/bookingForm.test.js`: the booking form's field checks (missing fields, a time that has passed, end before start, capacity, purpose length), filling the form from the address bar, and turning a booking into form values and back.
+- `src/lib/bookingForm.test.js`: the booking form's field checks (missing fields, a time that has passed, end before start, capacity), filling the form from the address, and turning a booking into form values and back.
 
 ## Run it locally
 
