@@ -54,7 +54,31 @@ Shared files: `src/App.jsx` (routes), `src/components/Layout.jsx` (navigation sh
 
 ## Mock data
 
-Phase 1 has no server. The data is a JavaScript array in `src/data/`, held in React state. Adding or editing an item updates that state; reloading the page resets it. This is expected for Phase 1.
+Phase 1 has no server. The data lives in `src/data/` and is held in React state in `src/App.jsx`. Adding or editing a booking updates that state; reloading the page resets it. This is expected for Phase 1 (the brief forbids `localStorage`).
+
+- `src/data/users.js`: 8 demo accounts.
+- `src/data/rooms.js`: 12 rooms in two buildings. Rooms are reference data: nobody creates or edits them.
+- `src/data/bookings.js`: 48 bookings, the main entity. Their days are counted from today, so the timeline always has bookings on it whenever the app is opened. `npm test` checks that every seed booking obeys the house rules.
+- `public/rooms/*.svg`: the room pictures are drawn floor plans, not real photographs.
+
+## Shared code (use it, don't copy it)
+
+Everything below is used by several surfaces. Change it only after telling the team.
+
+| What | File | How to use it |
+| --- | --- | --- |
+| Shared state | `src/App.jsx` | App holds `currentUser`, `bookings` and the demo data mode, and passes them to each route as props: `rooms`, `users`, `bookings`, `currentUser`, `simulation`. |
+| Changing bookings | `src/hooks/useBookings.js` | `addBooking(draft)`, `updateBooking(id, changes)`, `cancelBooking(id)`. Each returns `{ ok: true, booking }` or `{ ok: false, problems }`. They refuse anything that breaks a house rule or is not the user's own booking, so no screen can get around a rule. |
+| House rules | `src/lib/bookingRules.js` | `checkHouseRules(draft, bookings)` returns a list of `{ rule, message }` (empty = allowed). Call it while the user types to warn about a conflict before submit. `effectiveStatus(booking)` turns a confirmed booking that has ended into `completed`. |
+| "Is this mine?" | `src/lib/ownership.js` | `isOwner(booking, currentUser)`. Ask it before showing Edit or Cancel. |
+| Dates | `src/lib/time.js` | `formatTime`, `formatDate`, `formatDuration`, `dateKey`, `atTime`. |
+| The four data states | `src/hooks/useSimulatedRequest.js` + `src/components/states/` | `const { status, data, retry } = useSimulatedRequest(myData, simulation)`, then render `LoadingState`, `ErrorState` (with `onRetry={retry}`), `EmptyState` or your data. `src/pages/HomePage.jsx` shows the pattern. |
+| Demo bar | `src/components/DemoBar.jsx` | The dark bar at the top: switch who is signed in (including nobody) and force Normal, Slow, Empty or Error data. This is how the owner / other user / signed-out views and all four states are reachable in Phase 1. |
+| Colours | `src/index.css` | `brand-50` to `brand-800`. Use `bg-brand-600`, `text-brand-700` and so on instead of a fixed colour, so the palette can change in one place. |
+
+## Tests
+
+`npm test` runs `src/lib/bookingRules.test.js` with Node's built-in test runner: overlaps (touching ends allowed, one minute refused), the 2-hour limit, one booking per day, editing a booking without clashing with itself, and the seed data.
 
 ## Run it locally
 
