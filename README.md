@@ -1,4 +1,4 @@
-# CSC443 Project
+# Study Room Booking
 
 CSC443 Web Programming, Fall 2026, Section 31. Phase 1 (front end) is due Monday 9 November 2026 at 23:59.
 
@@ -6,23 +6,38 @@ CSC443 Web Programming, Fall 2026, Section 31. Phase 1 (front end) is due Monday
 
 ## Team
 
-Team name: _to be added_
+Team name: **Not_vibeCoding**
 
 | Member | Student ID |
 | --- | --- |
-| Andrew Wehbe | _to be added_ |
-| Elio El Koussa | _to be added_ |
-| Marc Hebbo | _to be added_ |
-| Njteh Balian | _to be added_ |
+| Elio El Koussa | 202400659 |
+| Njteh Balian | 202402285 |
+| Marc Hebbo | 202307801 |
+| Andrew Wehbe | 202202056 |
 
 ## Topic
 
-Topic number: _to be added_
-Brief reference code (from the footer of the topic spec): _to be added_
+Topic 02, Study Room Booking. Brief reference code: `CSC443-F26 · T02 · rev A`.
+
+The library's group study rooms are claimed by whoever gets there first. This application lets students see which rooms are free and book one for a time slot.
 
 ## Entities and fields
 
-_To be added once the topic is confirmed._
+These are the minimum fields from the topic spec. Fields we add are listed here as we add them.
+
+- **User**: name, email, student ID, password hash (Phase 2).
+- **Room** (reference data, nobody creates or edits it): name, building, floor, capacity, amenities (whiteboard, screen, power), photo.
+- **Booking** (owned by the user who made it): room, user, start time, end time, purpose, expected attendees, status (`confirmed`, `cancelled`, `completed`).
+
+**Ownership rule.** A user changes or cancels only their own bookings.
+
+**House rule.** A booking attempt fails, with a message naming the broken rule and why, when:
+
+1. it overlaps another confirmed booking of the same room, even by one minute;
+2. it is longer than two hours;
+3. the user already holds a confirmed future booking on that day (one per user per day).
+
+The booking form warns about a conflict before the user submits, not only after. An availability view shows every room on a chosen day as a timeline of booked and free blocks.
 
 ## Who owns what
 
@@ -30,10 +45,10 @@ Each member owns two surfaces (a surface is a screen with its own route). This t
 
 | Member | Surfaces (routes) | Files |
 | --- | --- | --- |
-| Andrew Wehbe | | |
 | Elio El Koussa | | |
-| Marc Hebbo | | |
 | Njteh Balian | | |
+| Marc Hebbo | | |
+| Andrew Wehbe | | |
 
 Shared files: `src/App.jsx` (routes), `src/components/Layout.jsx` (navigation shell).
 
