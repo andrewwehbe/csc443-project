@@ -1,0 +1,2 @@
+# Store every text file with LF endings, so Windows and Mac members don't produce whole-file diffs
+* text=auto eol=lf
