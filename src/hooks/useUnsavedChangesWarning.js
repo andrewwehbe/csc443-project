@@ -1,26 +1,22 @@
 import { useEffect } from 'react';
 import { useBlocker } from 'react-router';
 
-// Warns the user before they leave a form with unsaved changes.
-//   - Leaving inside the app (a link, the menu, the Back button): useBlocker holds the route change,
-//     and the form shows UnsavedChangesDialog so the user can stay or leave.
-//   - Closing the tab or reloading: the browser shows its own "Leave site?" prompt (beforeunload).
-// Returns the blocker. blocker.state is 'blocked' while a route change waits for the user's answer.
+// Warns before the user leaves a form with unsaved changes.
+//   - Inside the app (a link or the Back button): useBlocker holds the page change and we ask with confirm().
+//   - Closing or reloading the tab: the browser shows its own "Leave site?" prompt (beforeunload).
 export function useUnsavedChangesWarning(hasChanges) {
-  // Only a move to another page counts; a change to the ?query of the same page does not.
-  const blocker = useBlocker(
-    ({ currentLocation, nextLocation }) => hasChanges && currentLocation.pathname !== nextLocation.pathname
-  );
+  const blocker = useBlocker(hasChanges);
+
+  useEffect(() => {
+    if (blocker.state !== 'blocked') return;
+    if (window.confirm('You have unsaved changes. Leave without saving?')) blocker.proceed();
+    else blocker.reset();
+  }, [blocker]);
 
   useEffect(() => {
     if (!hasChanges) return;
-    function handleBeforeUnload(e) {
-      e.preventDefault();
-      e.returnValue = '';   // older browsers only show the prompt when this is set
-    }
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    const warn = (e) => e.preventDefault();
+    window.addEventListener('beforeunload', warn);
+    return () => window.removeEventListener('beforeunload', warn);
   }, [hasChanges]);
-
-  return blocker;
 }
