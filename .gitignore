@@ -1,0 +1,18 @@
+# dependencies: reinstalled with npm install, never committed
+node_modules/
+
+# build output: GitHub Actions rebuilds it on every push
+dist/
+
+# secrets (Phase 2): commit .env.example with the names only, never the values
+.env
+.env.*
+!.env.example
+
+# logs and editor files
+*.log
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+.idea/
