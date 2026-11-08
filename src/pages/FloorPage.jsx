@@ -3,7 +3,6 @@ import { useSimulatedRequest } from '../hooks/useSimulatedRequest.js';
 import { floorParams, floorsOf, floorTitle, readFloor, roomCount, roomsOnFloor } from '../lib/floor.js';
 import { floorName } from '../lib/roomDetail.js';
 import { roomStatus, statusChipClass } from '../lib/roomStatus.js';
-import { buttonClass } from '../lib/buttons.js';
 import { dateKey } from '../lib/time.js';
 import DayTimeline from '../components/DayTimeline.jsx';
 import LoadingState from '../components/states/LoadingState.jsx';
@@ -19,7 +18,6 @@ export default function FloorPage({ rooms, bookings, currentUser, simulation }) 
   const chosen = readFloor(searchParams, rooms);
   const { status, data, retry } = useSimulatedRequest(roomsOnFloor(rooms, chosen), simulation);
   const title = floorTitle(chosen);
-  const first = floorsOf(rooms)[0];
 
   return (
     <div>
@@ -37,8 +35,7 @@ export default function FloorPage({ rooms, bookings, currentUser, simulation }) 
         {status === 'empty' && (
           <EmptyState
             title="No rooms on this floor"
-            message="There are no bookable rooms here right now. Try another floor."
-            action={<Link to={`/rooms?${floorParams(first)}`} className={buttonClass('secondary', 'small')}>Go to the first floor</Link>}
+            message="There are no bookable rooms here right now. Pick another floor above."
           />
         )}
         {status === 'ready' && (
