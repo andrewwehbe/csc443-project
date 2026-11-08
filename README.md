@@ -4,6 +4,8 @@ CSC443 Web Programming, Fall 2026, Section 31. Phase 1 (front end) is due Monday
 
 **Live site:** https://andrewwehbe.github.io/csc443-project/
 
+**Task board:** [CSC443 Study Room Booking – Project board](https://app.notion.com/p/4126e9c213f381ae9809f71196ff3f54) (Notion). One card = one branch = one pull request.
+
 ## Team
 
 Team name: **Not_vibeCoding**
@@ -41,6 +43,24 @@ These are the minimum fields from the topic spec. Fields we add are listed here 
 3. the user already holds a confirmed future booking on that day (one per user per day).
 
 The booking form warns about a conflict before the user submits, not only after. An availability view shows every room on a chosen day as a timeline of booked and free blocks.
+
+## Design
+
+The professor's design pack for Topic 02 is the spec: 8 screens in plain HTML and Tailwind (`index.html`, `01-today.html` … `08-auth.html`, plus `components.html` for the shared pieces). It is not copied into this repository. We rebuild each screen as React components with our own state and data, and keep the pack's Tailwind classes as they are. The pack's HTML comments (`VARIANT`, `STATE`, `NOTE`, `RULE`, `RESPONSIVE`) are rules we follow. Its dark top strip and grey annotation bands are notes, not interface.
+
+**The Ghurfa look.** We use the pack's own identity, called Ghurfa: its palette and its two fonts, Fraunces for headings and IBM Plex Sans for everything else. The fonts are stored in `src/assets/fonts/` (SIL Open Font License), so the app makes no external font request. Corners are square: `rounded` on buttons, `rounded-[2px]` on bars, none on cards.
+
+**The token rule.** `src/index.css` defines the colours under the same names the pack uses (`paper`, `surface`, `ink`, `muted`, `line`, `brand-*`, `accent-*`), so a pack class like `bg-paper` or `text-brand-800` works unchanged. New code uses only these names, never fixed colours like `blue-800`. Tailwind's `red-*` is the one exception, used for errors and clashes as in the pack.
+
+## Who is looking, and the four data states
+
+Every screen that shows data handles **loading, empty, error and data**. None is ever a blank screen. Phase 1 has no server, so the dark **demo bar** at the top of every page fakes the request. Its "Data" menu forces Normal, Slow (loading), Empty or Error.
+
+**Who you are changes what you see.** The demo bar's "Signed in as" menu switches between the demo users and "Nobody (signed out)". Screens ask `isOwner(booking, currentUser)` for each booking, so all three variants are reachable:
+
+- **the owner** of a booking sees it as "yours", with Change the time and Cancel;
+- **another signed-in student** sees the same time as booked, with no name, and can book a free slot;
+- **someone signed out** sees what is free and is asked to sign in before booking.
 
 ## Who owns what
 
@@ -152,7 +172,7 @@ Every push to `main` runs `.github/workflows/deploy.yml`, which builds the app a
 Two settings make the app work on GitHub Pages:
 
 1. `base: '/csc443-project/'` in `vite.config.js`, because the site lives under the repository name and not at the root of the domain. The router in `src/main.jsx` uses the same value as its `basename`.
-2. A `404.html` that is a copy of `index.html`. GitHub Pages has no file for a route like `/csc443-project/rides/12`, so it serves `404.html`. Because that file is the app, React loads, React Router reads the URL and shows the right page. Without it, refreshing any page other than the home page shows GitHub's own 404 page.
+2. A `404.html` that is a copy of `index.html`. GitHub Pages has no file for a route like `/csc443-project/rooms/r3`, so it serves `404.html`. Because that file is the app, React loads, React Router reads the URL and shows the right page. Without it, refreshing any page other than the home page shows GitHub's own 404 page.
 
 ## Screenshots
 
