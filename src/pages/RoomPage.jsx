@@ -5,6 +5,7 @@ import { AMENITIES } from '../data/rooms.js';
 import { dayLabel, floorName, nextOwnBooking, parseWeek, weekDays, weekTitle, whenPhrase } from '../lib/roomDetail.js';
 import { roomStatus, statusChipClass } from '../lib/roomStatus.js';
 import { dateKey, formatTime } from '../lib/time.js';
+import { buttonClass } from '../lib/buttons.js';
 import DayTimeline from '../components/DayTimeline.jsx';
 import LoadingState from '../components/states/LoadingState.jsx';
 import EmptyState from '../components/states/EmptyState.jsx';
@@ -14,11 +15,11 @@ import ErrorState from '../components/states/ErrorState.jsx';
 // One room, its week as day timelines, and an action band that depends on who is looking.
 // The week shown lives in the address (?week=1), so it can be shared and survives a reload.
 
-const button = 'inline-flex items-center justify-center gap-2 rounded px-3 py-1.5 text-xs font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2';
-const primary = `${button} bg-brand-800 text-paper hover:bg-brand-900 focus-visible:outline-brand-800`;
-const secondary = `${button} border border-ink/20 bg-surface text-ink hover:bg-brand-50`;
-const destructive = `${button} bg-red-800 text-white hover:bg-red-900`;
-const quiet = `${button} text-muted hover:bg-brand-50 hover:text-ink`;
+const primary = buttonClass('primary', 'small');
+const secondary = buttonClass('secondary', 'small');
+const quiet = buttonClass('quiet', 'small');
+// The shared buttons have no destructive kind, so this one keeps the pack's red button here.
+const destructive = 'inline-flex items-center justify-center gap-2 rounded px-3 py-1.5 text-xs font-medium transition focus-visible:outline-2 focus-visible:outline-offset-2 bg-red-800 text-white hover:bg-red-900';
 const HOURS = ['08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21'];
 
 export default function RoomPage({ rooms, bookings, currentUser, simulation, cancelBooking }) {
