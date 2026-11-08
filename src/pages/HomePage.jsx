@@ -17,7 +17,7 @@ export default function HomePage({ rooms, bookings, simulation }) {
   return (
     <section>
       <h1 className="text-2xl font-semibold">Study Room Booking</h1>
-      <p className="mt-2 text-slate-600">See which library study rooms are free and book one for your group.</p>
+      <p className="mt-2 text-muted">See which library study rooms are free and book one for your group.</p>
 
       <h2 className="mt-8 text-lg font-semibold">Right now</h2>
       <div className="mt-3">
@@ -29,7 +29,7 @@ export default function HomePage({ rooms, bookings, simulation }) {
             {data.map((room) => {
               const running = currentBooking(room);
               return (
-                <li key={room.id} className="overflow-hidden rounded-xl border border-slate-200">
+                <li key={room.id} className="overflow-hidden rounded-xl border border-line">
                   <img
                     src={`${import.meta.env.BASE_URL}${room.photo}`}
                     alt={`Floor plan of ${room.name}: a table for ${room.capacity}`}
@@ -37,7 +37,7 @@ export default function HomePage({ rooms, bookings, simulation }) {
                   />
                   <div className="p-3">
                     <p className="font-medium">{room.name}</p>
-                    <p className="text-sm text-slate-600">{room.building}, floor {room.floor} · {room.capacity} seats</p>
+                    <p className="text-sm text-muted">{room.building}, floor {room.floor} · {room.capacity} seats</p>
                     <p className={`mt-2 text-sm font-medium ${running ? 'text-amber-700' : 'text-brand-700'}`}>
                       {running ? `Booked until ${formatTime(running.end)}` : 'Free now'}
                     </p>
