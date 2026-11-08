@@ -1,11 +1,72 @@
 @import 'tailwindcss';
 
-/* Our palette. Structure comes from the design system; the colours are ours.
-   Use bg-brand-600, text-brand-700 and so on. Change the values here to re-skin every screen. */
+/* The Ghurfa skin from the design pack, as given. Use these names, never a fixed colour:
+   bg-paper (page), bg-surface (cards and fields), text-ink, text-muted, border-line,
+   brand-50 to brand-900 (navy: actions, bookings) and accent-50 to accent-900 (ochre: your pick, warnings).
+   Every value below is the pack's own (styles.css), except brand-500, accent-200 to accent-400 and accent-700:
+   the pack never uses those, so they sit halfway between their neighbours. */
 @theme {
-  --color-brand-50: oklch(97.9% 0.021 166.113);
-  --color-brand-100: oklch(95% 0.052 163.051);
-  --color-brand-600: oklch(59.6% 0.145 163.225);
-  --color-brand-700: oklch(50.8% 0.118 165.612);
-  --color-brand-800: oklch(43.2% 0.095 166.913);
+  --color-paper: rgb(244 241 232);
+  --color-surface: rgb(253 252 248);
+  --color-ink: rgb(27 25 21);
+  --color-muted: rgb(108 103 92);
+  --color-line: rgb(220 213 196);
+
+  --color-brand-50: rgb(238 242 247);
+  --color-brand-100: rgb(216 225 236);
+  --color-brand-200: rgb(178 196 217);
+  --color-brand-300: rgb(131 161 192);
+  --color-brand-400: rgb(86 126 164);
+  --color-brand-500: rgb(65 101 138);
+  --color-brand-600: rgb(43 76 111);
+  --color-brand-700: rgb(36 61 89);
+  --color-brand-800: rgb(30 49 72);
+  --color-brand-900: rgb(22 36 52);
+
+  --color-accent-50: rgb(251 244 226);
+  --color-accent-100: rgb(245 229 188);
+  --color-accent-200: rgb(227 204 148);
+  --color-accent-300: rgb(209 178 108);
+  --color-accent-400: rgb(190 153 68);
+  --color-accent-500: rgb(172 127 28);
+  --color-accent-600: rgb(138 101 20);
+  --color-accent-700: rgb(110 80 19);
+  --color-accent-800: rgb(81 59 17);
+  --color-accent-900: rgb(51 38 11);
+
+  /* font-display for headings and names (the serif), font-body for everything else. */
+  --font-display: 'Fraunces', Georgia, ui-serif, serif;
+  --font-body: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+}
+
+/* The pack's fonts, taken out of its styles.css so nothing is fetched from another site. */
+@font-face {
+  font-family: 'Fraunces';
+  font-weight: 600;
+  font-display: swap;
+  src: url('./assets/fonts/fraunces-600.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Fraunces';
+  font-weight: 700;
+  font-display: swap;
+  src: url('./assets/fonts/fraunces-700.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-weight: 400;
+  font-display: swap;
+  src: url('./assets/fonts/ibm-plex-sans-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-weight: 500;
+  font-display: swap;
+  src: url('./assets/fonts/ibm-plex-sans-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-weight: 600;
+  font-display: swap;
+  src: url('./assets/fonts/ibm-plex-sans-600.woff2') format('woff2');
 }

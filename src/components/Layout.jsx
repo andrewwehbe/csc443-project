@@ -9,7 +9,7 @@ const links = [
 // The persistent shell: the demo bar, header and footer stay, the page inside <Outlet /> changes with the route.
 export default function Layout({ users, currentUser, onUserChange, simulation, onSimulationChange }) {
   return (
-    <div className="flex min-h-screen flex-col bg-white text-slate-900">
+    <div className="flex min-h-screen flex-col">
       <DemoBar
         users={users}
         currentUser={currentUser}
@@ -18,7 +18,7 @@ export default function Layout({ users, currentUser, onUserChange, simulation, o
         onSimulationChange={onSimulationChange}
       />
 
-      <header className="border-b border-slate-200">
+      <header className="border-b border-ink/15">
         <nav className="mx-auto flex max-w-5xl items-center gap-6 px-4 py-3" aria-label="Main">
           <span className="font-semibold text-brand-800">Study Rooms</span>
           <ul className="flex gap-4 text-sm">
@@ -27,7 +27,7 @@ export default function Layout({ users, currentUser, onUserChange, simulation, o
                 <NavLink
                   to={to}
                   end
-                  className={({ isActive }) => (isActive ? 'font-medium text-slate-900' : 'text-slate-500 hover:text-slate-900')}
+                  className={({ isActive }) => (isActive ? 'font-medium text-ink' : 'text-muted hover:text-ink')}
                 >
                   {label}
                 </NavLink>
@@ -41,7 +41,7 @@ export default function Layout({ users, currentUser, onUserChange, simulation, o
         <Outlet />
       </main>
 
-      <footer className="border-t border-slate-200 px-4 py-4 text-center text-xs text-slate-500">
+      <footer className="border-t border-line px-4 py-4 text-center text-xs text-muted">
         CSC443 Web Programming · Fall 2026 · Team Not_vibeCoding
       </footer>
     </div>

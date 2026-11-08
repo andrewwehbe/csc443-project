@@ -1,15 +1,12 @@
 // Shown when there is nothing to list. Always say why it is empty and what the user can do next.
 //   <EmptyState title="No rooms match" message="Try fewer filters." action={<Link to="/rooms">Clear filters</Link>} />
+// Styled like the design pack's empty state (02-availability.html).
 export default function EmptyState({ title, message, action }) {
   return (
-    <div className="rounded-xl border border-dashed border-slate-300 px-6 py-10 text-center">
-      <svg aria-hidden="true" viewBox="0 0 24 24" className="mx-auto h-10 w-10 text-slate-400" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <rect x="3" y="4" width="18" height="17" rx="2" />
-        <path d="M3 9h18M8 2v4M16 2v4M9 15h6" />
-      </svg>
-      <h2 className="mt-3 text-base font-semibold text-slate-900">{title}</h2>
-      {message && <p className="mt-1 text-sm text-slate-600">{message}</p>}
-      {action && <div className="mt-4">{action}</div>}
+    <div className="border border-dashed border-ink/25 bg-surface px-6 py-14 text-center">
+      <h2 className="font-display text-2xl font-semibold tracking-tight text-ink">{title}</h2>
+      {message && <p className="mx-auto mt-3 max-w-md text-sm text-muted">{message}</p>}
+      {action && <div className="mt-7 flex flex-wrap justify-center gap-3">{action}</div>}
     </div>
   );
 }
