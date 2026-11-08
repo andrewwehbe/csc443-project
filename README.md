@@ -98,6 +98,7 @@ Everything below is used by several surfaces. Change it only after telling the t
 | Router | `src/main.jsx` | A data router (`createBrowserRouter`), because only a data router can hold back a route change; the booking form needs that for its unsaved-changes warning. Its single route hands every address to `App`, so pages are still added as `<Route>`s in `src/App.jsx`. |
 | The four data states | `src/hooks/useSimulatedRequest.js` + `src/components/states/` | `const { status, data, retry } = useSimulatedRequest(myData, simulation)`, then render `LoadingState`, `ErrorState` (with `onRetry={retry}`), `EmptyState` or your data. `src/pages/HomePage.jsx` shows the pattern. |
 | Demo bar | `src/components/DemoBar.jsx` | The dark bar at the top: switch who is signed in (including nobody) and force Normal, Slow, Empty or Error data. This is how the owner / other user / signed-out views and all four states are reachable in Phase 1. |
+| Room status words (Elio) | `src/lib/roomStatus.js` | `roomStatus(room, bookings, date, currentUser)` returns `{ word, tone }` for a chip, e.g. `Free all day`, `Free from 15:00`, `Free until 17:00`, `Two gaps`, `Fully booked`, `Yours until 16:00`, `Out of service`; `null` for a day that is over. Only what is ahead of now counts. Draw it as `<span className={statusChipClass(status.tone)}>{status.word}</span>`. |
 | Colours | `src/index.css` | `brand-50` to `brand-800`. Use `bg-brand-600`, `text-brand-700` and so on instead of a fixed colour, so the palette can change in one place. |
 
 ## Tests
@@ -106,6 +107,7 @@ Everything below is used by several surfaces. Change it only after telling the t
 
 - `src/lib/bookingRules.test.js`: overlaps (touching ends allowed, one minute refused), the 2-hour limit, one booking per day, editing a booking without clashing with itself, and the seed data.
 - `src/lib/bookingForm.test.js`: the booking form's field checks (missing fields, a time that has passed, end before start, capacity), filling the form from the address, and turning a booking into form values and back.
+- `src/lib/roomStatus.test.js`: each status word (the pack's rooms B-204, B-206 and C-101), bookings that are over or cancelled, who is looking, a later day, out of service, and a day that is over.
 
 ## Run it locally
 
