@@ -15,7 +15,7 @@ export default function DemoBar({ users, currentUser, onUserChange, simulation, 
 
   return (
     <div className="bg-slate-900 text-slate-100">
-      <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-2 text-sm">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-2 text-sm">
         <span className="font-medium text-slate-300">Phase 1 demo</span>
         <label className="flex items-center gap-2">
           Signed in as

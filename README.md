@@ -73,7 +73,7 @@ Each member owns two surfaces (a surface is a screen with its own route). We fol
 | Andrew Wehbe | 05 Book a room (`/bookings/new`, and `/bookings/:bookingId/edit` to change a saved booking), 06 My bookings (`/my-bookings`) | `src/pages/NewBookingPage.jsx`, `src/pages/EditBookingPage.jsx`, `src/pages/MyBookingsPage.jsx`, `src/components/BookingForm.jsx`, `src/components/Field.jsx`, `src/lib/bookingForm.js` and its test, `src/lib/buttons.js`, `src/hooks/useUnsavedChangesWarning.js` |
 | Marc Hebbo | 07 History (`/my-bookings/history`), 08 Sign in and register (`/sign-in`, `/register`) | to come |
 
-Shared files: `src/main.jsx` (router), `src/App.jsx` (routes), `src/components/Layout.jsx` (navigation shell). Andrew also wrote the shared code listed below.
+Shared files: `src/main.jsx` (router), `src/App.jsx` (routes), `src/components/Layout.jsx` (the Ghurfa header and footer around every screen; as in the pack, Today and Book a room light the Availability link, History lights My bookings, and below `md` the links hide). Andrew also wrote the shared code listed below.
 
 ### Routes
 
