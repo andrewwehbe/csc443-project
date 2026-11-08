@@ -110,6 +110,7 @@ Everything below is used by several surfaces. Change it only after telling the t
 - `src/lib/bookingForm.test.js`: the booking form's field checks (missing fields, a time that has passed, end before start, capacity), filling the form from the address, and turning a booking into form values and back.
 - `src/lib/timeline.js`'s test: segment and gap widths (matching the design pack), clipping to 08:00-22:00, the overlay position of a chosen time or clash, and the hour-by-hour list used on phones.
 - `src/lib/roomStatus.test.js`: each status word (the pack's rooms B-204, B-206 and C-101), bookings that are over or cancelled, who is looking, a later day, out of service, and a day that is over.
+- `src/lib/roomDetail.test.js`: the Room detail week (Monday to Sunday, `?week=` read safely), the signed-in user's next booking of a room, and how its day is written.
 
 ## Run it locally
 
