@@ -44,14 +44,14 @@ The booking form warns about a conflict before the user submits, not only after.
 
 ## Who owns what
 
-Each member owns two surfaces (a surface is a screen with its own route). This table is what the individual examination is built from, so it must stay accurate.
+Each member owns two surfaces (a surface is a screen with its own route). We follow the design pack's own pairing: 01 + 02, 03 + 04, 05 + 06, 07 + 08. This table is what the individual examination is built from, so it must stay accurate: when you add a file to your screens, add it to your row.
 
 | Member | Surfaces (routes) | Files |
 | --- | --- | --- |
-| Elio El Koussa | | |
-| Njteh Balian | | |
-| Marc Hebbo | | |
-| Andrew Wehbe | New booking (`/bookings/new`), Edit booking (`/bookings/:bookingId/edit`) | `src/pages/NewBookingPage.jsx`, `src/pages/EditBookingPage.jsx`, `src/components/BookingForm.jsx`, `src/components/Field.jsx`, `src/lib/bookingForm.js` and its test, `src/hooks/useUnsavedChangesWarning.js` |
+| Njteh Balian | 01 Today (`/`), 02 Availability (`/availability`) | `src/pages/AvailabilityPage.jsx`, `src/lib/availabilityFilters.js` and its test; Today to come |
+| Elio El Koussa | 03 Room detail (`/rooms/:roomId`), 04 The floor (`/rooms`) | `src/pages/RoomPage.jsx`, `src/lib/roomDetail.js` and its test; The floor to come. Also the shared day timeline and room status words (see Shared code) |
+| Andrew Wehbe | 05 Book a room (`/bookings/new`, and `/bookings/:bookingId/edit` to change a saved booking), 06 My bookings (`/my-bookings`) | `src/pages/NewBookingPage.jsx`, `src/pages/EditBookingPage.jsx`, `src/pages/MyBookingsPage.jsx`, `src/components/BookingForm.jsx`, `src/components/Field.jsx`, `src/lib/bookingForm.js` and its test, `src/lib/buttons.js`, `src/hooks/useUnsavedChangesWarning.js` |
+| Marc Hebbo | 07 History (`/my-bookings/history`), 08 Sign in and register (`/sign-in`, `/register`) | to come |
 
 Shared files: `src/main.jsx` (router), `src/App.jsx` (routes), `src/components/Layout.jsx` (navigation shell). Andrew also wrote the shared code listed below.
 
@@ -59,21 +59,21 @@ Shared files: `src/main.jsx` (router), `src/App.jsx` (routes), `src/components/L
 
 Use these paths so the screens can link to each other (a booking links to its room, a room to its bookings, and so on). If you give your screen a different path, change it here in the same pull request, because other screens already link to these.
 
-| Path | Surface | Owner |
+| Path | Surface (design pack file) | Owner |
 | --- | --- | --- |
-| `/` | Home: which rooms are free right now | shared |
-| `/rooms` | Rooms list | Elio |
-| `/rooms/:roomId` | Room detail | Elio |
-| `/availability` | Availability timeline for a chosen day | Njteh |
-| `/users/:userId` | User profile | Njteh |
-| `/bookings/:bookingId` | Booking detail | Marc |
-| `/my-bookings` | My bookings | Marc |
-| `/bookings/new` | New booking | Andrew |
-| `/bookings/:bookingId/edit` | Edit booking | Andrew |
+| `/` | 01 Today: what is free now, and the three rules (`01-today.html`) | Njteh |
+| `/availability` | 02 Availability: every room across a day (`02-availability.html`) | Njteh |
+| `/rooms/:roomId` | 03 Room detail: one room and its week (`03-room.html`) | Elio |
+| `/rooms` | 04 The floor: every room, including the one out of service (`04-building.html`) | Elio |
+| `/bookings/new` | 05 Book a room (`05-book.html`) | Andrew |
+| `/bookings/:bookingId/edit` | 05 Book a room, changing a saved booking | Andrew |
+| `/my-bookings` | 06 My bookings, the Upcoming tab (`06-bookings.html`) | Andrew |
+| `/my-bookings/history` | 07 History, the History tab of My bookings (`07-history.html`) | Marc |
+| `/sign-in`, `/register` | 08 Sign in and register (`08-auth.html`) | Marc |
 
 **Opening the booking form already filled in.** Add any of `room`, `date`, `start` and `end` to the address, for example `/bookings/new?room=r3&date=2026-11-12&start=14:00&end=15:30`. Use this for "Book this room" on a room page and for a free slot on the availability timeline. A value that does not fit shows up as an error in the form.
 
-**Edit links.** An owner's Edit button goes to `/bookings/<id>/edit`. That page asks `isOwner` itself, so another student or someone signed out who opens the link sees a message instead of the form.
+**Change links.** An owner's Change button (as on My bookings and Room detail) goes to `/bookings/<id>/edit`. That page asks `isOwner` itself, so another student or someone signed out who opens the link sees a message instead of the form.
 
 ## Mock data
 
@@ -99,6 +99,7 @@ Everything below is used by several surfaces. Change it only after telling the t
 | The four data states | `src/hooks/useSimulatedRequest.js` + `src/components/states/` | `const { status, data, retry } = useSimulatedRequest(myData, simulation)`, then render `LoadingState`, `ErrorState` (with `onRetry={retry}`), `EmptyState` or your data. `src/pages/HomePage.jsx` shows the pattern. The three boxes are styled like the pack's states in `02-availability.html`. |
 | Demo bar | `src/components/DemoBar.jsx` | The dark bar at the top: switch who is signed in (including nobody) and force Normal, Slow, Empty or Error data. This is how the owner / other user / signed-out views and all four states are reachable in Phase 1. |
 | Day timeline (Elio) | `src/components/DayTimeline.jsx`, geometry in `src/lib/timeline.js` | `<DayTimeline bookings={roomBookings} date="2026-11-12" currentUser={currentUser} />` draws one room's day, 08:00 to 22:00. `bookings`: that room's bookings (only `date`'s are drawn, cancelled ones skipped; leave out the booking being edited). `currentUser`: their bookings show as "yours", nobody else's name is shown. `chosen={{ start, end }}`: a time being picked, drawn on top. `clash`: draw `chosen` in red over the booking it hits. `hours` (default on): the 08 … 21 header. `legend`: the colour key. `label`: a name like "B-204 · Thursday" for the phone list and screen readers. Below `md` it is a list of hours. |
+| Buttons (Andrew) | `src/lib/buttons.js` | The pack's buttons from `components.html`: `buttonClass('primary')`, `buttonClass('secondary', 'small')`, `buttonClass('quiet')`. One primary per screen. |
 | Room status words (Elio) | `src/lib/roomStatus.js` | `roomStatus(room, bookings, date, currentUser)` returns `{ word, tone }` for a chip, e.g. `Free all day`, `Free from 15:00`, `Free until 17:00`, `Two gaps`, `Fully booked`, `Yours until 16:00`, `Out of service`; `null` for a day that is over. Only what is ahead of now counts. Draw it as `<span className={statusChipClass(status.tone)}>{status.word}</span>`. |
 | Ghurfa colours and fonts | `src/index.css`, fonts in `src/assets/fonts/` | The design pack's skin, as given. Colours: `paper` (page), `surface` (cards and fields), `ink`, `muted`, `line`, `brand-50` to `brand-900` (navy) and `accent-50` to `accent-900` (ochre), so `bg-paper`, `text-muted`, `border-line`, `bg-brand-800` and so on. Fonts: `font-display` (Fraunces, for headings and room names) and `font-body` (IBM Plex Sans, the default). Use these names instead of fixed colours, so the skin changes in one place. |
 
@@ -107,7 +108,7 @@ Everything below is used by several surfaces. Change it only after telling the t
 `npm test` runs every `*.test.js` file with Node's built-in test runner:
 
 - `src/lib/bookingRules.test.js`: overlaps (touching ends allowed, one minute refused), the 2-hour limit, one booking per day, an out-of-service room, editing a booking without clashing with itself, and the seed data.
-- `src/lib/bookingForm.test.js`: the booking form's field checks (missing fields, a time that has passed, end before start, capacity), filling the form from the address, and turning a booking into form values and back.
+- `src/lib/bookingForm.test.js`: the booking form's field checks (missing fields, a time that has passed, end before start, capacity), filling the form from the address, and turning a booking into form values and back, and the nearest free stretch offered when a time clashes.
 - `src/lib/timeline.js`'s test: segment and gap widths (matching the design pack), clipping to 08:00-22:00, the overlay position of a chosen time or clash, and the hour-by-hour list used on phones.
 - `src/lib/roomStatus.test.js`: each status word (the pack's rooms B-204, B-206 and C-101), bookings that are over or cancelled, who is looking, a later day, out of service, and a day that is over.
 - `src/lib/roomDetail.test.js`: the Room detail week (Monday to Sunday, `?week=` read safely), the signed-in user's next booking of a room, and how its day is written.
