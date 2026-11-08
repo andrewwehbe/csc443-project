@@ -1,4 +1,5 @@
 import { dateKey, formatDate, formatDuration, formatTime, minutesBetween } from './time.js';
+import { findRoom } from '../data/rooms.js';
 
 export const MAX_MINUTES = 120;
 
@@ -16,6 +17,15 @@ export function checkHouseRules(draft, bookings, now = new Date()) {
   const problems = [];
   // Cancelled and completed bookings never block anyone.
   const others = bookings.filter((b) => b.id !== draft.id && b.status === 'confirmed');
+
+  // Before the three rules: a room that is out of service accepts no booking at all.
+  const room = findRoom(draft.roomId);
+  if (room?.status === 'out-of-service') {
+    problems.push({
+      rule: 'out-of-service',
+      message: `${room.name} is out of service, so it cannot be booked. Choose another room.`,
+    });
+  }
 
   // Rule 1: no overlap with another confirmed booking of the same room, not even by one minute.
   const clash = others.find((b) => b.roomId === draft.roomId && overlaps(b, draft));

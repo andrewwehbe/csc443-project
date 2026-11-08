@@ -65,6 +65,13 @@ test('every broken rule is reported, each with a message', () => {
   for (const p of problems) assert.ok(p.message.length > 20);
 });
 
+test('a room that is out of service refuses every booking, with its own message', () => {
+  const problems = checkHouseRules(booking('new', 'r4', 'u1', 1, '10:00', '11:00'), [], now);
+  assert.deepEqual(problems.map((p) => p.rule), ['out-of-service']);
+  assert.match(problems[0].message, /Study Room 201 is out of service/);
+  assert.deepEqual(checkHouseRules(booking('new', 'r5', 'u1', 1, '10:00', '11:00'), [], now), []);
+});
+
 test('a confirmed booking that has ended counts as completed', () => {
   assert.equal(effectiveStatus(booking('x', 'r1', 'u1', -1, '10:00', '11:00'), now), 'completed');
   assert.equal(effectiveStatus(existing[0], now), 'confirmed');
@@ -86,4 +93,6 @@ test('the seed data has at least 40 bookings and obeys every house rule', () => 
     }
   }
   assert.equal(rooms.length, new Set(rooms.map((r) => r.id)).size, 'duplicate room ids');
+  assert.ok(rooms.every((r) => ['open', 'out-of-service'].includes(r.status)), 'a room without a valid status');
+  assert.ok(rooms.some((r) => r.status === 'out-of-service'), 'no room is out of service');
 });
