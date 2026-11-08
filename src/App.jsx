@@ -5,6 +5,7 @@ import HomePage from './pages/HomePage.jsx';
 import NotFoundPage from './pages/NotFoundPage.jsx';
 import NewBookingPage from './pages/NewBookingPage.jsx';
 import EditBookingPage from './pages/EditBookingPage.jsx';
+import RoomPage from './pages/RoomPage.jsx';
 import AvailabilityPage from './pages/AvailabilityPage.jsx';
 import { rooms } from './data/rooms.js';
 import { users } from './data/users.js';
@@ -36,6 +37,8 @@ export default function App() {
         {/* Andrew: New booking and Edit booking */}
         <Route path="bookings/new" element={<NewBookingPage {...shared} addBooking={addBooking} />} />
         <Route path="bookings/:bookingId/edit" element={<EditBookingPage {...shared} updateBooking={updateBooking} />} />
+        {/* Elio: Room detail */}
+        <Route path="rooms/:roomId" element={<RoomPage {...shared} cancelBooking={cancelBooking} />} />
         {/* Njteh: Availability */}
         <Route path="availability" element={<AvailabilityPage {...shared} />} />
         {/* The other surfaces go here, on the paths in the README's route table, for example:
