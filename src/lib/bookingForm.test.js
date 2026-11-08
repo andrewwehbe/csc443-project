@@ -1,7 +1,7 @@
 // Run with: npm test
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { bookingToForm, emptyForm, formToDraft, validateForm } from './bookingForm.js';
+import { bookingToForm, emptyForm, formToDraft, nearestFreeSlot, validateForm } from './bookingForm.js';
 import { rooms } from '../data/rooms.js';
 import { atTime } from './time.js';
 
@@ -37,4 +37,12 @@ test('the address can fill in a new booking', () => {
 test('a booking survives the trip into the form and back', () => {
   const booking = { roomId: 'r6', start: atTime(1, '09:30', now), end: atTime(1, '11:00', now), attendees: 6, purpose: 'Review' };
   assert.deepEqual(formToDraft(bookingToForm(booking)), booking);
+});
+
+test('a clash suggests the nearest free stretch of the same length', () => {
+  const taken = { id: 'b1', roomId: 'r1', userId: 'u2', start: atTime(1, '10:00', now), end: atTime(1, '12:00', now), status: 'confirmed' };
+  const draft = { roomId: 'r1', userId: 'u1', start: atTime(1, '11:00', now), end: atTime(1, '13:00', now) };
+  assert.deepEqual(nearestFreeSlot(draft, [taken], now), { start: '12:00', end: '14:00' });   // the pack's example
+  const allDay = { ...taken, start: atTime(1, '08:00', now), end: atTime(1, '22:00', now) };
+  assert.equal(nearestFreeSlot(draft, [allDay], now), null);
 });

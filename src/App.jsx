@@ -5,6 +5,7 @@ import HomePage from './pages/HomePage.jsx';
 import NotFoundPage from './pages/NotFoundPage.jsx';
 import NewBookingPage from './pages/NewBookingPage.jsx';
 import EditBookingPage from './pages/EditBookingPage.jsx';
+import MyBookingsPage from './pages/MyBookingsPage.jsx';
 import RoomPage from './pages/RoomPage.jsx';
 import AvailabilityPage from './pages/AvailabilityPage.jsx';
 import { rooms } from './data/rooms.js';
@@ -34,9 +35,10 @@ export default function App() {
         }
       >
         <Route index element={<HomePage {...shared} />} />
-        {/* Andrew: New booking and Edit booking */}
+        {/* Andrew: 05 Book a room (new and edit) and 06 My bookings */}
         <Route path="bookings/new" element={<NewBookingPage {...shared} addBooking={addBooking} />} />
         <Route path="bookings/:bookingId/edit" element={<EditBookingPage {...shared} updateBooking={updateBooking} />} />
+        <Route path="my-bookings" element={<MyBookingsPage {...shared} cancelBooking={cancelBooking} />} />
         {/* Elio: Room detail */}
         <Route path="rooms/:roomId" element={<RoomPage {...shared} cancelBooking={cancelBooking} />} />
         {/* Njteh: Availability */}
