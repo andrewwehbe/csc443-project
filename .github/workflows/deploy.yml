@@ -27,7 +27,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
-      # GitHub Pages only knows the files in dist/. A direct visit to /csc443-project/rides/12
+      # GitHub Pages only knows the files in dist/. A direct visit to /csc443-project/rooms/r3
       # finds no such file, so Pages answers with 404.html. Making 404.html a copy of index.html
       # loads the React app anyway, and React Router then reads the URL and shows the right page.
       - run: cp dist/index.html dist/404.html
