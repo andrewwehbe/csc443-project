@@ -26,7 +26,7 @@ The library's group study rooms are claimed by whoever gets there first. This ap
 These are the minimum fields from the topic spec. Fields we add are listed here as we add them.
 
 - **User**: name, email, student ID, password hash (Phase 2).
-- **Room** (reference data, nobody creates or edits it): name, building, floor, capacity, amenities (whiteboard, screen, power), photo.
+- **Room** (reference data, nobody creates or edits it): name, building, floor, capacity, amenities (whiteboard, screen, power), status (`open` or `out-of-service`), photo. Study Room 201 is out of service: it still appears everywhere, but no booking of it is accepted.
 - **Booking** (owned by the user who made it): room, user, start time, end time, purpose, expected attendees, status (`confirmed`, `cancelled`, `completed`).
   - Stored as `{ id, roomId, userId, start, end, purpose, attendees, status }`; `start` and `end` are ISO date strings.
   - The booking form adds these limits: the start must still be in the future, the end comes after the start on the same day, attendees is a whole number from 1 to the room's capacity, and the purpose is required and at most 80 characters.
@@ -106,7 +106,7 @@ Everything below is used by several surfaces. Change it only after telling the t
 
 `npm test` runs every `*.test.js` file with Node's built-in test runner:
 
-- `src/lib/bookingRules.test.js`: overlaps (touching ends allowed, one minute refused), the 2-hour limit, one booking per day, editing a booking without clashing with itself, and the seed data.
+- `src/lib/bookingRules.test.js`: overlaps (touching ends allowed, one minute refused), the 2-hour limit, one booking per day, an out-of-service room, editing a booking without clashing with itself, and the seed data.
 - `src/lib/bookingForm.test.js`: the booking form's field checks (missing fields, a time that has passed, end before start, capacity), filling the form from the address, and turning a booking into form values and back.
 - `src/lib/timeline.js`'s test: segment and gap widths (matching the design pack), clipping to 08:00-22:00, the overlay position of a chosen time or clash, and the hour-by-hour list used on phones.
 - `src/lib/roomStatus.test.js`: each status word (the pack's rooms B-204, B-206 and C-101), bookings that are over or cancelled, who is looking, a later day, out of service, and a day that is over.
