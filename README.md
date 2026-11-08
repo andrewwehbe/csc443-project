@@ -99,6 +99,7 @@ Everything below is used by several surfaces. Change it only after telling the t
 | The four data states | `src/hooks/useSimulatedRequest.js` + `src/components/states/` | `const { status, data, retry } = useSimulatedRequest(myData, simulation)`, then render `LoadingState`, `ErrorState` (with `onRetry={retry}`), `EmptyState` or your data. `src/pages/HomePage.jsx` shows the pattern. |
 | Demo bar | `src/components/DemoBar.jsx` | The dark bar at the top: switch who is signed in (including nobody) and force Normal, Slow, Empty or Error data. This is how the owner / other user / signed-out views and all four states are reachable in Phase 1. |
 | Day timeline (Elio) | `src/components/DayTimeline.jsx`, geometry in `src/lib/timeline.js` | `<DayTimeline bookings={roomBookings} date="2026-11-12" currentUser={currentUser} />` draws one room's day, 08:00 to 22:00. `bookings`: that room's bookings (only `date`'s are drawn, cancelled ones skipped; leave out the booking being edited). `currentUser`: their bookings show as "yours", nobody else's name is shown. `chosen={{ start, end }}`: a time being picked, drawn on top. `clash`: draw `chosen` in red over the booking it hits. `hours` (default on): the 08 … 21 header. `legend`: the colour key. `label`: a name like "B-204 · Thursday" for the phone list and screen readers. Below `md` it is a list of hours. |
+| Room status words (Elio) | `src/lib/roomStatus.js` | `roomStatus(room, bookings, date, currentUser)` returns `{ word, tone }` for a chip, e.g. `Free all day`, `Free from 15:00`, `Free until 17:00`, `Two gaps`, `Fully booked`, `Yours until 16:00`, `Out of service`; `null` for a day that is over. Only what is ahead of now counts. Draw it as `<span className={statusChipClass(status.tone)}>{status.word}</span>`. |
 | Colours | `src/index.css` | `brand-50` to `brand-800`. Use `bg-brand-600`, `text-brand-700` and so on instead of a fixed colour, so the palette can change in one place. |
 
 ## Tests
@@ -108,6 +109,8 @@ Everything below is used by several surfaces. Change it only after telling the t
 - `src/lib/bookingRules.test.js`: overlaps (touching ends allowed, one minute refused), the 2-hour limit, one booking per day, editing a booking without clashing with itself, and the seed data.
 - `src/lib/bookingForm.test.js`: the booking form's field checks (missing fields, a time that has passed, end before start, capacity), filling the form from the address, and turning a booking into form values and back.
 - `src/lib/timeline.js`'s test: segment and gap widths (matching the design pack), clipping to 08:00-22:00, the overlay position of a chosen time or clash, and the hour-by-hour list used on phones.
+- `src/lib/roomStatus.test.js`: each status word (the pack's rooms B-204, B-206 and C-101), bookings that are over or cancelled, who is looking, a later day, out of service, and a day that is over.
+- `src/lib/roomDetail.test.js`: the Room detail week (Monday to Sunday, `?week=` read safely), the signed-in user's next booking of a room, and how its day is written.
 
 ## Run it locally
 
