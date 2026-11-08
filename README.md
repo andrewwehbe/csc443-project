@@ -49,7 +49,7 @@ Each member owns two surfaces (a surface is a screen with its own route). We fol
 | Member | Surfaces (routes) | Files |
 | --- | --- | --- |
 | Njteh Balian | 01 Today (`/`), 02 Availability (`/availability`) | `src/pages/AvailabilityPage.jsx`, `src/lib/availabilityFilters.js` and its test; Today to come |
-| Elio El Koussa | 03 Room detail (`/rooms/:roomId`), 04 The floor (`/rooms`) | `src/pages/RoomPage.jsx`, `src/lib/roomDetail.js` and its test; The floor to come. Also the shared day timeline and room status words (see Shared code) |
+| Elio El Koussa | 03 Room detail (`/rooms/:roomId`), 04 The floor (`/rooms`) | `src/pages/RoomPage.jsx`, `src/lib/roomDetail.js` and its test, `src/pages/FloorPage.jsx`, `src/lib/floor.js` and its test. Also the shared day timeline and room status words (see Shared code) |
 | Andrew Wehbe | 05 Book a room (`/bookings/new`, and `/bookings/:bookingId/edit` to change a saved booking), 06 My bookings (`/my-bookings`) | `src/pages/NewBookingPage.jsx`, `src/pages/EditBookingPage.jsx`, `src/pages/MyBookingsPage.jsx`, `src/components/BookingForm.jsx`, `src/components/Field.jsx`, `src/lib/bookingForm.js` and its test, `src/lib/buttons.js`, `src/hooks/useUnsavedChangesWarning.js` |
 | Marc Hebbo | 07 History (`/my-bookings/history`), 08 Sign in and register (`/sign-in`, `/register`) | to come |
 
@@ -112,6 +112,7 @@ Everything below is used by several surfaces. Change it only after telling the t
 - `src/lib/timeline.js`'s test: segment and gap widths (matching the design pack), clipping to 08:00-22:00, the overlay position of a chosen time or clash, and the hour-by-hour list used on phones.
 - `src/lib/roomStatus.test.js`: each status word (the pack's rooms B-204, B-206 and C-101), bookings that are over or cancelled, who is looking, a later day, out of service, and a day that is over.
 - `src/lib/roomDetail.test.js`: the Room detail week (Monday to Sunday, `?week=` read safely), the signed-in user's next booking of a room, and how its day is written.
+- `src/lib/floor.test.js`: The floor's list of floors, the floor read from the address (a missing or bad one opens the first floor), the rooms on a floor, and its title and room count.
 
 ## Run it locally
 
