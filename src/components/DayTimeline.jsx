@@ -57,7 +57,7 @@ export default function DayTimeline({ bookings, date, currentUser, chosen = null
               ))}
             </div>
           )}
-          <div className="relative h-8 overflow-hidden rounded-[2px] border border-line bg-paper p-0.5">
+          <div className="@container relative h-8 overflow-hidden rounded-[2px] border border-line bg-paper p-0.5">
             <div className="flex h-full gap-px">
               {parts.map((part, i) =>
                 part.type === 'gap' ? (
@@ -69,7 +69,10 @@ export default function DayTimeline({ bookings, date, currentUser, chosen = null
                     style={{ width: `${part.width}%` }}
                     title={rangeTitle(part.from, part.to)}
                   >
-                    {rangeLabel(part.from, part.to)}{part.kind === 'yours' && ' · yours'}
+                    {/* A bar narrower than 24rem (a card on The floor) has no room for labels, which would wrap
+                        over each other, so it shows none; otherwise one line, cut with an ellipsis if it must be.
+                        The title and the screen-reader list below still give every time in words. */}
+                    <span className="hidden min-w-0 truncate @sm:inline">{part.kind === 'yours' ? 'yours' : rangeLabel(part.from, part.to)}</span>
                   </div>
                 )
               )}
@@ -81,7 +84,7 @@ export default function DayTimeline({ bookings, date, currentUser, chosen = null
                 style={{ left: `${overlay.left}%`, width: `${overlay.width}%` }}
                 title={rangeTitle(overlay.from, overlay.to)}
               >
-                {rangeLabel(overlay.from, overlay.to)}
+                <span className="hidden min-w-0 truncate @sm:inline">{rangeLabel(overlay.from, overlay.to)}</span>
               </div>
             )}
           </div>

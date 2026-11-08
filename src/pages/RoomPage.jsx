@@ -101,8 +101,9 @@ export default function RoomPage({ rooms, bookings, currentUser, simulation, can
           </div>
           <div className="mt-1 space-y-6 md:space-y-2">
             {days.map((day, i) => (
-              <div key={day} className="md:flex md:items-center md:gap-3">
-                <span className="hidden w-14 flex-none font-mono text-xs tabular-nums text-muted md:block" aria-hidden="true">{dayLabel(day)}</span>
+              <div key={day} className="md:flex md:items-start md:gap-3">
+                {/* Lined up with the bar (h-8), not centred on the whole block: the last day also holds the legend. */}
+                <span className="hidden h-8 w-14 flex-none items-center font-mono text-xs tabular-nums text-muted md:flex" aria-hidden="true">{dayLabel(day)}</span>
                 <div className="min-w-0 flex-1">
                   <DayTimeline
                     bookings={roomBookings}
