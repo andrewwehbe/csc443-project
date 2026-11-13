@@ -22,7 +22,9 @@ const initials = (name) => name.split(' ').map((word) => word[0]).join('').slice
 // The persistent shell: the demo bar, header and footer stay, the page inside <Outlet /> changes with the route.
 // The header follows the design pack: below md the links hide, below sm the Book a room button hides too.
 export default function Layout({ users, currentUser, onUserChange, simulation, onSimulationChange }) {
-  const current = section(useLocation().pathname);
+  const { pathname } = useLocation();
+  const current = section(pathname);
+  const fullBleed = pathname === '/sign-in' || pathname === '/register';
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -66,13 +68,15 @@ export default function Layout({ users, currentUser, onUserChange, simulation, o
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-10">
+      <main className={fullBleed ? 'flex w-full flex-1 flex-col' : 'mx-auto w-full max-w-6xl flex-1 px-4 py-10'}>
         <Outlet />
       </main>
 
-      <footer className="mx-auto mt-20 w-full max-w-6xl border-t border-line px-4 py-8 text-xs text-muted">
-        <span className="font-display font-bold tracking-wide">GHURFA</span> · CSC443 Web Programming · Fall 2026 · Team Not_vibeCoding
-      </footer>
+      {!fullBleed && (
+        <footer className="mx-auto mt-20 w-full max-w-6xl border-t border-line px-4 py-8 text-xs text-muted">
+          <span className="font-display font-bold tracking-wide">GHURFA</span> · CSC443 Web Programming · Fall 2026 · Team Not_vibeCoding
+        </footer>
+      )}
     </div>
   );
 }
