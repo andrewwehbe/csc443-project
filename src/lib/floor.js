@@ -1,3 +1,4 @@
+import { bySize } from '../data/rooms.js';
 import { floorName } from './roomDetail.js';
 
 // The floor screen (/rooms) shows one floor at a time. The chosen floor lives in the address,
@@ -34,7 +35,7 @@ export function floorParams({ slug, floor }) {
 }
 
 export function roomsOnFloor(rooms, { building, floor }) {
-  return rooms.filter((room) => room.building === building && room.floor === floor);
+  return rooms.filter((room) => room.building === building && room.floor === floor).toSorted(bySize);
 }
 
 // 'Main Library, second floor'

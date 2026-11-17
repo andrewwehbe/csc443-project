@@ -1,4 +1,4 @@
-import { AMENITIES } from '../data/rooms.js';
+import { AMENITIES, bySize } from '../data/rooms.js';
 import { dateKey } from './time.js';
 
 function parseDay(day) {
@@ -49,7 +49,7 @@ export function filtersToParams({ date, capacity, exact, amenities }) {
 // Capacity is a minimum unless exact is set. A room must have every ticked amenity.
 export function filterRooms(rooms, { capacity, exact, amenities }) {
   const fits = (room) => !capacity || (exact ? room.capacity === capacity : room.capacity >= capacity);
-  return rooms.filter((room) => fits(room) && amenities.every((amenity) => room.amenities.includes(amenity)));
+  return rooms.filter((room) => fits(room) && amenities.every((amenity) => room.amenities.includes(amenity))).toSorted(bySize);
 }
 
 export function shiftDay(day, by) {
