@@ -9,6 +9,7 @@ import { buttonClass } from '../lib/buttons.js';
 import LoadingState from '../components/states/LoadingState.jsx';
 import EmptyState from '../components/states/EmptyState.jsx';
 import ErrorState from '../components/states/ErrorState.jsx';
+import ConfirmDialog from '../components/ConfirmDialog.jsx';
 
 const dayName = (iso) => whenPhrase(iso).replace(/^on /, '').replace(/^./, (c) => c.toUpperCase());   // 'Today', 'Thu 12 Nov'
 
@@ -28,13 +29,14 @@ export default function MyBookingsPage({ rooms, bookings, currentUser, simulatio
   const mine = bookings.filter((b) => isOwner(b, currentUser));
   const upcoming = mine.filter((b) => b.status === 'confirmed' && new Date(b.end) > now).sort((a, b) => new Date(a.start) - new Date(b.start));
   const { status, data, retry } = useSimulatedRequest(upcoming, simulation);
-  const [message, setMessage] = useState('');   // what the last Cancel did
+  const [message, setMessage] = useState('');       // why the last Cancel failed, if it did
+  const [asking, setAsking] = useState(null);       // { booking, what } while the confirm dialog is open
 
-  function handleCancel(booking, room) {
-    const what = `${room.name}, ${dayName(booking.start)} ${formatTime(booking.start)} to ${formatTime(booking.end)}`;
-    if (!window.confirm(`Cancel ${what}? This cannot be undone.`)) return;
-    const result = cancelBooking(booking.id);
-    setMessage(result.ok ? `Cancelled ${what}.` : result.problems[0].message);
+  // Cancel asks first, in a dialog. A cancel that works shows the Undo message at the bottom (App).
+  function confirmCancel() {
+    const result = cancelBooking(asking.booking.id);
+    setMessage(result.ok ? '' : result.problems[0].message);
+    setAsking(null);
   }
 
   let content;
@@ -62,7 +64,7 @@ export default function MyBookingsPage({ rooms, bookings, currentUser, simulatio
                 <span className="flex w-full flex-wrap items-center gap-3 sm:w-auto">
                   <span className={`${statusChipClass(tone)} mr-auto sm:mr-0`}>{word}</span>
                   {new Date(booking.start) > now && <Link to={`/bookings/${booking.id}/edit`} className={buttonClass('secondary', 'small')}>Change</Link>}
-                  <button type="button" onClick={() => handleCancel(booking, room)} className={buttonClass('secondary', 'small')}>Cancel</button>
+                  <button type="button" onClick={() => setAsking({ booking, what: `${room.name}, ${dayName(booking.start)} ${formatTime(booking.start)} to ${formatTime(booking.end)}` })} className={buttonClass('secondary', 'small')}>Cancel</button>
                 </span>
               </li>
             );
@@ -86,6 +88,8 @@ export default function MyBookingsPage({ rooms, bookings, currentUser, simulatio
       </nav>
       {message && <p role="status" className="mt-5 rounded-lg border-l-4 border-brand-700 bg-brand-50 p-4 text-sm font-semibold text-brand-900">{message}</p>}
       <div className="mt-5">{content}</div>
+      <ConfirmDialog open={asking !== null} title="Cancel this booking?" message={asking && `${asking.what}. The room goes back to everyone.`}
+        confirmLabel="Cancel booking" danger onConfirm={confirmCancel} onCancel={() => setAsking(null)} />
     </section>
   );
 }
