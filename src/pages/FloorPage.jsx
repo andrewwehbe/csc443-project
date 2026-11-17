@@ -4,7 +4,7 @@ import { floorParams, floorsOf, floorTitle, readFloor, roomCount, roomsOnFloor }
 import { floorName } from '../lib/roomDetail.js';
 import { roomStatus, statusChipClass } from '../lib/roomStatus.js';
 import { dateKey } from '../lib/time.js';
-import DayTimeline from '../components/DayTimeline.jsx';
+import DayTimeline, { TimelineLegend } from '../components/DayTimeline.jsx';
 import LoadingState from '../components/states/LoadingState.jsx';
 import EmptyState from '../components/states/EmptyState.jsx';
 import BusyHours from '../components/BusyHours.jsx';
@@ -41,9 +41,12 @@ export default function FloorPage({ rooms, bookings, currentUser, simulation }) 
         )}
         {status === 'ready' && (
           <>
-            <p className="max-w-prose text-sm text-muted">
-              {roomCount(data.length)}. Capacity and equipment are fixed by the library; pick a room to see its week and book it.
-            </p>
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <p className="max-w-prose text-sm text-muted">
+                {roomCount(data.length)}. Capacity and equipment are fixed by the library; pick a room to see its week and book it.
+              </p>
+              <div className="hidden md:block"><TimelineLegend /></div>
+            </div>
             <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
               {data.map((room) => (
                 <RoomCard key={room.id} room={room} bookings={bookings} currentUser={currentUser} />
@@ -116,7 +119,8 @@ function RoomCard({ room, bookings, currentUser }) {
             </div>
           </div>
         ) : (
-          <DayTimeline bookings={bookings.filter((b) => b.roomId === room.id)} date={today} currentUser={currentUser} hours={false} label="Today" />
+          // With its hour labels: a bar without them cannot be read.
+          <DayTimeline bookings={bookings.filter((b) => b.roomId === room.id)} date={today} currentUser={currentUser} label="Today" />
         )}
       </div>
     </Link>

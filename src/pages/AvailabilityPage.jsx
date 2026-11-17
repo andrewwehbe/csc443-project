@@ -11,6 +11,8 @@ import {
   readFilters,
   shiftDay,
 } from '../lib/availabilityFilters.js';
+import { roomStatus, statusChipClass } from '../lib/roomStatus.js';
+import DayTimeline, { TimelineLegend } from '../components/DayTimeline.jsx';
 import LoadingState from '../components/states/LoadingState.jsx';
 import EmptyState from '../components/states/EmptyState.jsx';
 import ErrorState from '../components/states/ErrorState.jsx';
@@ -92,28 +94,27 @@ function AmenityDropdown({ selected, onToggle }) {
   );
 }
 
-// ≥ or =, joined into one control. The fallback keeps the symbol readable until the theme defines paper.
+// "At least" or "Exactly", joined into one control. Words, not ≥ and =, so nobody has to guess.
+// The fallback keeps the text readable until the theme defines paper.
 function MatchToggle({ exact, onChange }) {
   const choices = [
-    { symbol: '≥', label: 'At least', value: false },
-    { symbol: '=', label: 'Exactly', value: true },
+    { label: 'At least', value: false },
+    { label: 'Exactly', value: true },
   ];
 
   return (
     <div role="group" aria-label="Capacity match" className="flex">
-      {choices.map(({ symbol, label, value }, i) => (
+      {choices.map(({ label, value }, i) => (
         <button
           key={label}
           type="button"
-          aria-label={label}
-          title={label}
           aria-pressed={exact === value}
           onClick={() => onChange(value)}
           className={`border px-3 py-2.5 text-sm ${i === 0 ? 'rounded-l-lg' : '-ml-px rounded-r-lg'} ${
             exact === value ? 'border-brand-800 bg-brand-800 text-[var(--color-paper,white)]' : 'border-ink/20 bg-surface text-ink hover:bg-brand-50'
           }`}
         >
-          {symbol}
+          {label}
         </button>
       ))}
     </div>
@@ -121,7 +122,7 @@ function MatchToggle({ exact, onChange }) {
 }
 
 // Surface: 02 Availability, at /availability. Owner: Njteh Balian.
-export default function AvailabilityPage({ rooms, simulation }) {
+export default function AvailabilityPage({ rooms, bookings, currentUser, simulation }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const filters = readFilters(searchParams);
   const { status, data, retry } = useSimulatedRequest(rooms, simulation);
@@ -166,19 +167,38 @@ export default function AvailabilityPage({ rooms, simulation }) {
     );
   } else {
     content = (
-      <ul className="space-y-3">
-        {matches.map((room) => (
-          <li key={room.id} className="rounded-xl border border-line bg-surface px-5 py-4">
-            <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-              <h2 className="font-display text-lg font-semibold tracking-tight text-ink">
-                <Link to={`/rooms/${room.id}`}>{room.name}</Link>
-              </h2>
-              <p className="text-xs text-muted">{[`${room.capacity} people`, room.amenities.join(', ')].filter(Boolean).join(' · ')}</p>
-            </div>
-            {/* DayTimeline for filters.date goes here once it's on main (Notion #5). */}
-          </li>
-        ))}
-      </ul>
+      <>
+        <div className="mb-4 hidden md:block"><TimelineLegend canBook /></div>
+        <ul className="space-y-3">
+          {matches.map((room) => {
+            // The chip and the bar are for the chosen day; a day already over has no chip.
+            const status = roomStatus(room, bookings, filters.date, currentUser);
+            const open = room.status !== 'out-of-service';
+            return (
+              <li key={room.id} className="rounded-xl border border-line bg-surface px-5 py-4">
+                <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+                  <h2 className="font-display text-lg font-semibold tracking-tight text-ink">
+                    <Link to={`/rooms/${room.id}`} className="hover:underline">{room.name}</Link>
+                  </h2>
+                  <p className="text-xs text-muted">{[`${room.capacity} people`, room.amenities.join(', ')].filter(Boolean).join(' · ')}</p>
+                  <span className="flex-1" />
+                  {status && <span className={statusChipClass(status.tone)}>{status.word}</span>}
+                </div>
+                {/* Phones get the chip and a Book link: twelve hour-by-hour lists would make the page endless. */}
+                {open && (
+                  <div className="mt-3 hidden md:block">
+                    <DayTimeline bookings={bookings.filter((b) => b.roomId === room.id)} date={filters.date} currentUser={currentUser}
+                      label={room.name} bookRoomId={room.id} />
+                  </div>
+                )}
+                {open && status && (
+                  <Link to={`/bookings/new?room=${room.id}&date=${filters.date}`} className={`${outlineButton} mt-3 md:hidden`}>Book this room</Link>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </>
     );
   }
 
@@ -241,8 +261,8 @@ export default function AvailabilityPage({ rooms, simulation }) {
           <button type="button" onClick={clearFilters} className={quietButton}>Clear</button>
           <span className="flex-1" />
           {status === 'ready' && (
-            <span role="status" className="font-mono text-xs text-muted">
-              {matches.length} {matches.length === 1 ? 'room' : 'rooms'}
+            <span role="status" className="pb-2.5 text-sm font-semibold text-ink">
+              {matches.length} {matches.length === 1 ? 'room matches' : 'rooms match'}
             </span>
           )}
         </form>

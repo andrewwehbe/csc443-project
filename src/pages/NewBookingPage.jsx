@@ -46,7 +46,7 @@ export default function NewBookingPage({ rooms, bookings, currentUser, simulatio
     <section>
       <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">Ghurfa <span className="text-accent-600">/</span> Book</p>
       <h1 className="mt-4 font-display text-4xl font-semibold tracking-tight text-ink">Book a room</h1>
-      <p className="mt-2 max-w-prose text-sm text-muted">Two hours at most, one booking a day. The clash is checked while you choose the time, not after you press the button.</p>
+      <p className="mt-2 max-w-prose text-sm text-muted">Two hours at most, one upcoming booking a day. The clash is checked while you choose the time, not after you press the button.</p>
       <div className="mt-10">{content}</div>
     </section>
   );

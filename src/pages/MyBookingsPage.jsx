@@ -70,7 +70,7 @@ export default function MyBookingsPage({ rooms, bookings, currentUser, simulatio
             );
           })}
         </ul>
-        <p className="mt-4 text-xs text-muted">You can hold one booking a day, so each of these is on a different day.</p>
+        <p className="mt-4 text-xs text-muted">You can hold one upcoming booking a day, so each of these is on a different day.</p>
       </>
     );
   }
@@ -78,14 +78,17 @@ export default function MyBookingsPage({ rooms, bookings, currentUser, simulatio
   return (
     <section>
       <h1 className="font-display text-4xl font-semibold tracking-tight text-ink">My bookings</h1>
-      <nav className="mt-6 flex gap-8 border-b border-line" aria-label="My bookings">
-        <Link to="/my-bookings" aria-current="page" className="border-b-2 border-accent-500 pb-2.5 font-display text-sm font-semibold text-ink">
-          Upcoming <span className="ml-1.5 rounded border border-line px-1.5 font-mono text-[10px] tabular-nums">{upcoming.length}</span>
-        </Link>
-        <Link to="/my-bookings/history" className="border-b-2 border-transparent pb-2.5 font-display text-sm text-muted hover:text-ink">
-          History <span className="ml-1.5 rounded border border-line px-1.5 font-mono text-[10px] tabular-nums">{mine.length - upcoming.length}</span>
-        </Link>
-      </nav>
+      {/* The tabs only mean something once someone is signed in: "Upcoming 0" over a sign-in prompt confuses. */}
+      {currentUser && (
+        <nav className="mt-6 flex gap-8 border-b border-line" aria-label="My bookings">
+          <Link to="/my-bookings" aria-current="page" className="border-b-2 border-accent-500 pb-2.5 font-display text-sm font-semibold text-ink">
+            Upcoming <span className="ml-1.5 rounded border border-line px-1.5 font-mono text-[10px] tabular-nums">{upcoming.length}</span>
+          </Link>
+          <Link to="/my-bookings/history" className="border-b-2 border-transparent pb-2.5 font-display text-sm text-muted hover:text-ink">
+            History <span className="ml-1.5 rounded border border-line px-1.5 font-mono text-[10px] tabular-nums">{mine.length - upcoming.length}</span>
+          </Link>
+        </nav>
+      )}
       {message && <p role="status" className="mt-5 rounded-lg border-l-4 border-brand-700 bg-brand-50 p-4 text-sm font-semibold text-brand-900">{message}</p>}
       <div className="mt-5">{content}</div>
       <ConfirmDialog open={asking !== null} title="Cancel this booking?" message={asking && `${asking.what}. The room goes back to everyone.`}

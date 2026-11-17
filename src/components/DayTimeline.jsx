@@ -46,7 +46,8 @@ export default function DayTimeline({ bookings, date, currentUser, chosen = null
   const [offer, setOffer] = useState(null);   // the popover: { left, start, end, from, to } in % and minutes
   const now = new Date();
   const today = dateKey(now);
-  const nowMinute = date === today ? minuteOfDay(now) : -1;
+  // Where "now" falls on this day: a past day is all gone, a later day not started.
+  const nowMinute = date === today ? minuteOfDay(now) : date < today ? DAY_END : -1;
   const canBook = Boolean(bookRoomId) && date >= today;
   // Only the day's bookings that hold the room. Completed ones still held it, so they stay.
   const blocks = bookings
@@ -55,6 +56,10 @@ export default function DayTimeline({ bookings, date, currentUser, chosen = null
   const parts = daySegments(blocks);
   const overlay = chosen && overlayPosition(chosen.start, chosen.end);
   const overlayKind = clash ? 'clash' : 'chosen';
+  // The time already gone is shaded (on today, up to a line marking now), so past time never reads as free.
+  const pastShare = nowMinute > DAY_START ? (Math.min(nowMinute, DAY_END) - DAY_START) / (DAY_END - DAY_START) * 100 : 0;
+  // Phones list only the hours still ahead: all fourteen on a later day, none on a past one.
+  const rows = hourRows(blocks, overlay && { ...chosen, clash }).filter((row) => minuteOfDay(`${date}T${row.hour}`) + 60 > nowMinute);
 
   // A click on free time: where on the bar it landed, as a minute of the day, then the booking to offer there.
   function openOffer(e) {
@@ -104,6 +109,10 @@ export default function DayTimeline({ bookings, date, currentUser, chosen = null
                 )
               )}
             </div>
+            {pastShare > 0 && (
+              <div className={`pointer-events-none absolute inset-y-0 left-0 bg-ink/10 ${pastShare < 100 ? 'border-r-2 border-accent-500' : ''}`}
+                style={{ width: `${pastShare}%` }} />
+            )}
             {/* Drawn on top of the bookings, not beside them, so an overlap is literally visible. */}
             {overlay && (
               <div
@@ -123,8 +132,9 @@ export default function DayTimeline({ bookings, date, currentUser, chosen = null
       {/* Below md: one row per hour. */}
       <div className="md:hidden">
         {label && <p className="mb-3 font-display text-base font-semibold text-ink">{label}</p>}
+        {rows.length === 0 && <p className="text-xs text-muted">This day is over.</p>}
         <ul className="space-y-1">
-          {hourRows(blocks, overlay && { ...chosen, clash }).map((row) => (
+          {rows.map((row) => (
             <li key={row.hour} className="flex items-stretch gap-2">
               <span className="w-11 flex-none pt-1 font-mono text-[11px] tabular-nums text-muted">{row.hour}</span>
               {canBook && row.kind === 'free' && minuteOfDay(`${date}T${row.hour}`) > nowMinute ? (
@@ -142,20 +152,24 @@ export default function DayTimeline({ bookings, date, currentUser, chosen = null
         </ul>
       </div>
 
-      {legend && <TimelineLegend />}
+      {legend && <div className="mt-5 border-t border-line pt-4"><TimelineLegend picking={Boolean(chosen)} canBook={canBook} /></div>}
     </div>
   );
 }
 
-// The colour key. A screen with one bar per room puts it once under the list: <TimelineLegend />.
-export function TimelineLegend() {
+// The colour key. A screen with one bar per room puts it once next to the list: <TimelineLegend canBook />.
+// It names only what can be on the screen: "Being chosen" and "Clashes" only where a time is being picked.
+// canBook adds the hint that free time is clickable (bars only, so not on phones).
+export function TimelineLegend({ picking = false, canBook = false }) {
   return (
-    <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-line pt-4 text-xs text-muted" aria-hidden="true">
-      <span className="flex items-center gap-2"><span className="h-3 w-7 rounded-sm border border-line bg-paper" />Free</span>
-      <span className="flex items-center gap-2"><span className="h-3 w-7 rounded-sm bg-brand-200" />Booked by someone else</span>
-      <span className="flex items-center gap-2"><span className="h-3 w-7 rounded-sm bg-brand-800" />Yours</span>
-      <span className="flex items-center gap-2"><span className="h-3 w-7 rounded-sm bg-accent-100 ring-2 ring-inset ring-accent-500" />Being chosen</span>
-      <span className="flex items-center gap-2"><span className="h-3 w-7 rounded-sm bg-red-100 ring-2 ring-inset ring-red-600" />Clashes</span>
+    <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-muted">
+      <span aria-hidden="true" className="flex items-center gap-2"><span className="h-3 w-7 rounded-sm border border-line bg-paper" />Free</span>
+      <span aria-hidden="true" className="flex items-center gap-2"><span className="h-3 w-7 rounded-sm bg-brand-200" />Booked by someone else</span>
+      <span aria-hidden="true" className="flex items-center gap-2"><span className="h-3 w-7 rounded-sm bg-brand-800" />Yours</span>
+      <span aria-hidden="true" className="hidden items-center gap-2 md:flex"><span className="h-3 w-7 rounded-sm border-r-2 border-accent-500 bg-ink/10" />Past</span>
+      {picking && <span aria-hidden="true" className="flex items-center gap-2"><span className="h-3 w-7 rounded-sm bg-accent-100 ring-2 ring-inset ring-accent-500" />Being chosen</span>}
+      {picking && <span aria-hidden="true" className="flex items-center gap-2"><span className="h-3 w-7 rounded-sm bg-red-100 ring-2 ring-inset ring-red-600" />Clashes</span>}
+      {canBook && <span className="hidden font-medium text-ink md:inline">Click free time on a bar to book it.</span>}
     </div>
   );
 }
