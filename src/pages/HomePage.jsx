@@ -1,36 +1,29 @@
 import { useEffect, useState } from 'react';
-import { Link, useSearchParams } from 'react-router';
+import { Link } from 'react-router';
 import { useSimulatedRequest } from '../hooks/useSimulatedRequest.js';
-import { headline, isFreeNow, openingState, roomsToShow } from '../lib/today.js';
-import { roomStatus, statusChipClass } from '../lib/roomStatus.js';
+import { headline, isFreeNow } from '../lib/today.js';
 import { MAX_MINUTES } from '../lib/bookingRules.js';
-import { formatLongDay, shiftDay } from '../lib/availabilityFilters.js';
+import { formatLongDay } from '../lib/availabilityFilters.js';
 import { dateKey } from '../lib/time.js';
 import { buttonClass } from '../lib/buttons.js';
 import { CalendarPlus } from 'lucide-react';
 import Icon from '../components/Icon.jsx';
-import DayTimeline, { TimelineLegend } from '../components/DayTimeline.jsx';
+import RoomFinder from '../components/RoomFinder.jsx';
 import LoadingState from '../components/states/LoadingState.jsx';
 import EmptyState from '../components/states/EmptyState.jsx';
 import ErrorState from '../components/states/ErrorState.jsx';
 
 // Surface: 01 Today, at / (design pack 01-today.html). Owner: Njteh Balian.
-// What is free right now, the rooms you can still get today, and the three house rules.
+// What is free right now, a calendar of the week to find a room by time (RoomFinder), and the house rules.
 // It is also the example of the pattern every data screen follows: get the data, pass it through
 // useSimulatedRequest, then render one of the four states (loading, error, empty, the data).
-// The list's span lives in the address (/?show=day), so Back and a reload keep it.
+// The calendar's pick lives in the address (/?day=…&at=…&for=…), so Back and a reload keep it.
 
 const RULES = [
   { figure: `${MAX_MINUTES / 60}h`, title: 'Maximum per booking', text: 'Long enough for a working session, short enough that rooms turn over.' },
   { figure: '1', title: 'Upcoming booking a day', text: 'So the same four people cannot hold a room every afternoon of the week.' },
   { figure: '0', title: 'Double bookings', text: 'Two confirmed bookings on one room may never overlap. Not by a minute.' },
 ];
-
-// The two spans, shown as a two-button switch: the lit one is the list on screen.
-const SPANS = {
-  soon: { title: 'Free in the next two hours', label: 'Next 2 hours', to: '/' },
-  day: { title: 'Free at some point today', label: 'Rest of today', to: '/?show=day' },
-};
 
 // "Right now" moves on: check the clock again every minute while the page is open.
 function useNow() {
@@ -43,8 +36,6 @@ function useNow() {
 }
 
 export default function HomePage({ rooms, bookings, currentUser, simulation }) {
-  const [searchParams] = useSearchParams();
-  const span = searchParams.get('show') === 'day' ? 'day' : 'soon';
   const now = useNow();
   const today = dateKey(now);
   const { status, data, retry } = useSimulatedRequest(rooms, simulation);
@@ -52,7 +43,6 @@ export default function HomePage({ rooms, bookings, currentUser, simulation }) {
   // Until the rooms arrive the heading asks the question; once they do, it answers it.
   const [lead, rest] =
     status === 'ready' ? headline(data.filter((room) => isFreeNow(room, bookings, now)).length, now) : ['Which rooms are free', 'right now?'];
-  const shown = status === 'ready' ? roomsToShow(data, bookings, span, currentUser, now) : [];
 
   let content;
   if (status === 'loading') {
@@ -63,19 +53,8 @@ export default function HomePage({ rooms, bookings, currentUser, simulation }) {
     );
   } else if (status === 'empty') {
     content = <EmptyState title="No rooms to show" message="The library has not listed any study rooms yet." />;
-  } else if (shown.length === 0) {
-    content = <NothingFree span={span} now={now} />;
   } else {
-    content = (
-      <>
-        <div className="mb-4 hidden md:block"><TimelineLegend canBook /></div>
-        <ul className="space-y-3">
-          {shown.map((room) => (
-            <RoomRow key={room.id} room={room} bookings={bookings} today={today} now={now} currentUser={currentUser} />
-          ))}
-        </ul>
-      </>
-    );
+    content = <RoomFinder rooms={data} bookings={bookings} currentUser={currentUser} today={today} now={now} />;
   }
 
   return (
@@ -92,23 +71,13 @@ export default function HomePage({ rooms, bookings, currentUser, simulation }) {
         <div className="mt-8 flex flex-wrap gap-3">
           {/* Booking is what people come for, so it is the page's one primary (the header hides its own here). */}
           <Link to="/bookings/new" className={buttonClass('primary')}><Icon icon={CalendarPlus} size="sm" />Book a room</Link>
-          <Link to="/availability" className={buttonClass('secondary')}>Find a free room</Link>
+          <a href="#when" className={buttonClass('secondary')}>Pick a time</a>
         </div>
       </section>
 
-      <section className="mt-12">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <h2 className="font-display text-2xl font-semibold tracking-tight text-ink">{SPANS[span].title}</h2>
-          <nav aria-label="Which rooms to list" className="flex rounded-lg border border-line bg-surface p-0.5 text-sm">
-            {Object.entries(SPANS).map(([key, { label, to }]) => (
-              <Link key={key} to={to} aria-current={key === span ? 'page' : undefined}
-                className={`rounded-md px-3 py-1.5 ${key === span ? 'bg-brand-50 font-semibold text-brand-900' : 'text-muted hover:text-ink'}`}>
-                {label}
-              </Link>
-            ))}
-          </nav>
-        </div>
-        <div className="mt-5">{content}</div>
+      <section id="when" className="mt-12 scroll-mt-6">
+        <h2 className="font-display text-2xl font-semibold tracking-tight text-ink">When do you need a room?</h2>
+        <div className="mt-4">{content}</div>
       </section>
 
       <section className="mt-14 grid gap-6 sm:grid-cols-3">
@@ -122,56 +91,5 @@ export default function HomePage({ rooms, bookings, currentUser, simulation }) {
         ))}
       </section>
     </div>
-  );
-}
-
-// One room: its name (the whole card links to it), size, status word and today's timeline.
-function RoomRow({ room, bookings, today, now, currentUser }) {
-  const roomBookings = bookings.filter((b) => b.roomId === room.id);
-  const status = roomStatus(room, bookings, today, currentUser, now);
-  const nothingBooked = !roomBookings.some((b) => b.status !== 'cancelled' && dateKey(b.start) === today);
-
-  return (
-    <li className="relative rounded-xl border border-line bg-surface px-5 py-4">
-      <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-        <h3 className="font-display text-lg font-semibold tracking-tight text-ink">
-          {/* after:inset-0 stretches the link over the card, so the whole card opens the room. */}
-          <Link to={`/rooms/${room.id}`} className="after:absolute after:inset-0">{room.name}</Link>
-        </h3>
-        <p className="text-xs text-muted">{[`${room.capacity} people`, room.amenities.join(', ')].filter(Boolean).join(' · ')}</p>
-        <span className="flex-1" />
-        {status && <span className={statusChipClass(status.tone)}>{status.word}</span>}
-      </div>
-      {/* relative z-10: above the card's link, so a click on free time opens the booking popover.
-          Phones skip the hour list (eleven rooms of it is a page you never reach the end of): the chip says
-          when the room is free, and Book goes straight to the form. */}
-      <div className="relative z-10 mt-3 hidden md:block">
-        <DayTimeline bookings={roomBookings} date={today} currentUser={currentUser} bookRoomId={room.id} />
-        {nothingBooked && <p className="mt-1.5 text-xs text-muted">Nothing booked today.</p>}
-      </div>
-      <Link to={`/bookings/new?room=${room.id}&date=${today}`} className={`${buttonClass('secondary', 'small')} relative z-10 mt-3 md:hidden`}>Book this room</Link>
-    </li>
-  );
-}
-
-// The list came back empty: say why, and offer the next place to look.
-function NothingFree({ span, now }) {
-  // Secondary: the hero's "Book a room" is the page's one primary button.
-  const small = buttonClass('secondary', 'small');
-  const wholeDay = <Link to="/?show=day" className={small}>See the rest of today</Link>;
-  const tomorrow = <Link to={`/availability?date=${shiftDay(dateKey(now), 1)}`} className={small}>See tomorrow</Link>;
-  const hours = openingState(now);
-
-  if (hours === 'after') {
-    return <EmptyState title="Nothing more to book today" message="It opens again tomorrow at 08:00." action={tomorrow} />;
-  }
-  if (span === 'day') {
-    return <EmptyState title="No room is free for the rest of today" message="Every room is booked until closing time." action={tomorrow} />;
-  }
-  if (hours === 'before') {
-    return <EmptyState title="Nothing opens in the next two hours" message="The rest of today shows what is free from 08:00." action={wholeDay} />;
-  }
-  return (
-    <EmptyState title="No room is free in the next two hours" message="Every room is taken until later. The rest of today shows when they free up." action={wholeDay} />
   );
 }
