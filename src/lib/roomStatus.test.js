@@ -15,8 +15,9 @@ const booking = (id, day, start, end, userId = 'u2', status = 'confirmed') => ({
 });
 const word = (bookings, day = today, user = me, r = room) => roomStatus(r, bookings, day, user, now)?.word;
 
-test('a room with nothing booked is free all day', () => {
-  assert.equal(word([]), 'Free all day');
+test('a room with nothing booked is free all day, or until closing once the day has started', () => {
+  assert.equal(word([], tomorrow), 'Free all day');
+  assert.equal(word([]), 'Free until 22:00');
 });
 
 test('a room busy now is free from the end of that booking (pack: B-206)', () => {
@@ -24,12 +25,12 @@ test('a room busy now is free from the end of that booking (pack: B-206)', () =>
 });
 
 test('bookings that are over do not count', () => {
-  assert.equal(word([booking('a', today, '09:00', '11:00')]), 'Free all day');
+  assert.equal(word([booking('a', today, '09:00', '11:00')]), 'Free until 22:00');
 });
 
 test('cancelled bookings and other rooms do not count', () => {
   const other = { ...booking('b', today, '14:00', '16:00'), roomId: 'r2' };
-  assert.equal(word([booking('a', today, '14:00', '16:00', 'u2', 'cancelled'), other]), 'Free all day');
+  assert.equal(word([booking('a', today, '14:00', '16:00', 'u2', 'cancelled'), other]), 'Free until 22:00');
 });
 
 test('your own booking running now reads "Yours until" (pack: B-204)', () => {

@@ -138,14 +138,17 @@ export default function HistoryPage({ rooms, bookings, currentUser, simulation }
   return (
     <section>
       <h1 className="font-display text-4xl font-semibold tracking-tight text-ink">My bookings</h1>
-      <nav className="mt-6 flex gap-8 border-b border-line" aria-label="My bookings">
-        <Link to="/my-bookings" className="border-b-2 border-transparent pb-2.5 font-display text-sm text-muted hover:text-ink">
-          Upcoming <span className="ml-1.5 rounded border border-line px-1.5 font-mono text-[10px] tabular-nums">{upcomingCount}</span>
-        </Link>
-        <Link to="/my-bookings/history" aria-current="page" className="border-b-2 border-accent-500 pb-2.5 font-display text-sm font-semibold text-ink">
-          History <span className="ml-1.5 rounded border border-line px-1.5 font-mono text-[10px] tabular-nums">{past.length}</span>
-        </Link>
-      </nav>
+      {/* No tabs while signed out: the counts would be zeros over a sign-in prompt. */}
+      {currentUser && (
+        <nav className="mt-6 flex gap-8 border-b border-line" aria-label="My bookings">
+          <Link to="/my-bookings" className="border-b-2 border-transparent pb-2.5 font-display text-sm text-muted hover:text-ink">
+            Upcoming <span className="ml-1.5 rounded border border-line px-1.5 font-mono text-[10px] tabular-nums">{upcomingCount}</span>
+          </Link>
+          <Link to="/my-bookings/history" aria-current="page" className="border-b-2 border-accent-500 pb-2.5 font-display text-sm font-semibold text-ink">
+            History <span className="ml-1.5 rounded border border-line px-1.5 font-mono text-[10px] tabular-nums">{past.length}</span>
+          </Link>
+        </nav>
+      )}
       <div className="mt-5">{content}</div>
     </section>
   );

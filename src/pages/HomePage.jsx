@@ -20,13 +20,14 @@ import ErrorState from '../components/states/ErrorState.jsx';
 
 const RULES = [
   { figure: `${MAX_MINUTES / 60}h`, title: 'Maximum per booking', text: 'Long enough for a working session, short enough that rooms turn over.' },
-  { figure: '1', title: 'Booking a day', text: 'So the same four people cannot hold a room every afternoon of the week.' },
+  { figure: '1', title: 'Upcoming booking a day', text: 'So the same four people cannot hold a room every afternoon of the week.' },
   { figure: '0', title: 'Double bookings', text: 'Two confirmed bookings on one room may never overlap. Not by a minute.' },
 ];
 
+// The two spans, shown as a two-button switch: the lit one is the list on screen.
 const SPANS = {
-  soon: { title: 'Free in the next two hours', other: { to: '/?show=day', label: 'Whole day' } },
-  day: { title: 'Free at some point today', other: { to: '/', label: 'Next two hours' } },
+  soon: { title: 'Free in the next two hours', label: 'Next 2 hours', to: '/' },
+  day: { title: 'Free at some point today', label: 'Rest of today', to: '/?show=day' },
 };
 
 // "Right now" moves on: check the clock again every minute while the page is open.
@@ -65,12 +66,12 @@ export default function HomePage({ rooms, bookings, currentUser, simulation }) {
   } else {
     content = (
       <>
+        <div className="mb-4 hidden md:block"><TimelineLegend canBook /></div>
         <ul className="space-y-3">
           {shown.map((room) => (
             <RoomRow key={room.id} room={room} bookings={bookings} today={today} now={now} currentUser={currentUser} />
           ))}
         </ul>
-        <TimelineLegend />
       </>
     );
   }
@@ -83,21 +84,26 @@ export default function HomePage({ rooms, bookings, currentUser, simulation }) {
           {lead}<br />{rest}
         </h1>
         <p className="mt-5 max-w-lg text-base text-muted">
-          Two hours is the limit and one booking a day, so the room you take is a room somebody else cannot. Ghurfa exists to
-          stop two groups walking into the same door.
+          Two hours is the limit and one upcoming booking a day, so the room you take is a room somebody else cannot. Ghurfa
+          exists to stop two groups walking into the same door.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
-          <Link to="/availability" className={buttonClass('primary')}>See today</Link>
-          <Link to="/rooms" className={buttonClass('secondary')}>Browse the rooms</Link>
+          <Link to="/availability" className={buttonClass('primary')}>Find a room</Link>
+          <Link to="/rooms" className={buttonClass('secondary')}>Browse by floor</Link>
         </div>
       </section>
 
       <section className="mt-12">
-        <div className="flex items-end justify-between gap-4">
+        <div className="flex flex-wrap items-end justify-between gap-4">
           <h2 className="font-display text-2xl font-semibold tracking-tight text-ink">{SPANS[span].title}</h2>
-          <Link to={SPANS[span].other.to} className="shrink-0 text-sm text-brand-700 underline decoration-accent-500 decoration-2 underline-offset-4">
-            {SPANS[span].other.label}
-          </Link>
+          <nav aria-label="Which rooms to list" className="flex rounded-lg border border-line bg-surface p-0.5 text-sm">
+            {Object.entries(SPANS).map(([key, { label, to }]) => (
+              <Link key={key} to={to} aria-current={key === span ? 'page' : undefined}
+                className={`rounded-md px-3 py-1.5 ${key === span ? 'bg-brand-800 font-medium text-paper' : 'text-muted hover:text-ink'}`}>
+                {label}
+              </Link>
+            ))}
+          </nav>
         </div>
         <div className="mt-5">{content}</div>
       </section>
@@ -133,20 +139,23 @@ function RoomRow({ room, bookings, today, now, currentUser }) {
         <span className="flex-1" />
         {status && <span className={statusChipClass(status.tone)}>{status.word}</span>}
       </div>
-      {/* relative z-10: above the card's link, so a click on free time opens the booking popover */}
-      <div className="relative z-10 mt-3">
+      {/* relative z-10: above the card's link, so a click on free time opens the booking popover.
+          Phones skip the hour list (eleven rooms of it is a page you never reach the end of): the chip says
+          when the room is free, and Book goes straight to the form. */}
+      <div className="relative z-10 mt-3 hidden md:block">
         <DayTimeline bookings={roomBookings} date={today} currentUser={currentUser} bookRoomId={room.id} />
+        {nothingBooked && <p className="mt-1.5 text-xs text-muted">Nothing booked today.</p>}
       </div>
-      {nothingBooked && <p className="mt-1.5 text-xs text-muted">Nothing booked today.</p>}
+      <Link to={`/bookings/new?room=${room.id}&date=${today}`} className={`${buttonClass('secondary', 'small')} relative z-10 mt-3 md:hidden`}>Book this room</Link>
     </li>
   );
 }
 
 // The list came back empty: say why, and offer the next place to look.
 function NothingFree({ span, now }) {
-  // Secondary: the hero's "See today" is the page's one primary button.
+  // Secondary: the hero's "Find a room" is the page's one primary button.
   const small = buttonClass('secondary', 'small');
-  const wholeDay = <Link to="/?show=day" className={small}>See the whole day</Link>;
+  const wholeDay = <Link to="/?show=day" className={small}>See the rest of today</Link>;
   const tomorrow = <Link to={`/availability?date=${shiftDay(dateKey(now), 1)}`} className={small}>See tomorrow</Link>;
   const hours = openingState(now);
 
@@ -157,9 +166,9 @@ function NothingFree({ span, now }) {
     return <EmptyState title="No room is free for the rest of today" message="Every room is booked until closing time." action={tomorrow} />;
   }
   if (hours === 'before') {
-    return <EmptyState title="Nothing opens in the next two hours" message="The whole day shows what is free from 08:00." action={wholeDay} />;
+    return <EmptyState title="Nothing opens in the next two hours" message="The rest of today shows what is free from 08:00." action={wholeDay} />;
   }
   return (
-    <EmptyState title="No room is free in the next two hours" message="Every room is taken until later. The whole day shows when they free up." action={wholeDay} />
+    <EmptyState title="No room is free in the next two hours" message="Every room is taken until later. The rest of today shows when they free up." action={wholeDay} />
   );
 }

@@ -2,27 +2,29 @@ import { Link, Outlet, useLocation } from 'react-router';
 import { CalendarPlus } from 'lucide-react';
 import { buttonClass } from '../lib/buttons.js';
 import { frame } from '../lib/frame.js';
+import AccountMenu from './AccountMenu.jsx';
 import DemoBar from './DemoBar.jsx';
 import MobileTabBar from './MobileTabBar.jsx';
 import Icon from './Icon.jsx';
 import Logo, { LogoMark } from './Logo.jsx';
 
+// The same four places as the phone's tab bar (MobileTabBar), with the same names.
 const links = [
+  { to: '/', label: 'Today' },
   { to: '/availability', label: 'Availability' },
   { to: '/rooms', label: 'Rooms' },
   { to: '/my-bookings', label: 'My bookings' },
 ];
 
-// Which header link is lit, as in the design pack: Today and Book a room count as Availability,
-// a room's page as Rooms, History as My bookings. Sign in lights none.
+// Which header link is lit: each page lights its own place, a room's page lights Rooms, History lights
+// My bookings. Booking and Sign in light none: the Book a room button is where you are.
 function section(pathname) {
+  if (pathname === '/') return '/';
+  if (pathname.startsWith('/availability')) return '/availability';
   if (pathname.startsWith('/rooms')) return '/rooms';
   if (pathname.startsWith('/my-bookings')) return '/my-bookings';
-  if (pathname === '/' || pathname.startsWith('/availability') || pathname.startsWith('/bookings')) return '/availability';
   return null;
 }
-
-const initials = (name) => name.split(' ').map((word) => word[0]).join('').slice(0, 2).toUpperCase();   // 'LH'
 
 // The persistent shell: the demo bar, header and footer stay, the page inside <Outlet /> changes with the route.
 // The header follows the design pack: below md the links hide, below sm the Book a room button hides too.
@@ -30,6 +32,7 @@ export default function Layout({ users, currentUser, onUserChange, simulation, o
   const { pathname } = useLocation();
   const current = section(pathname);
   const fullBleed = pathname === '/sign-in' || pathname === '/register';
+  const hideBook = pathname.startsWith('/rooms/') || pathname.startsWith('/bookings');
 
   return (
     <div className="flex min-h-screen flex-col pb-16 md:pb-0">
@@ -60,13 +63,11 @@ export default function Layout({ users, currentUser, onUserChange, simulation, o
             ))}
           </nav>
           <span className="flex-1" />
-          {/* The wrapper hides it: on the button itself, inline-flex would win over hidden. */}
-          <span className="hidden sm:block"><Link to="/bookings/new" className={buttonClass('primary', 'small')}><Icon icon={CalendarPlus} size="sm" />Book a room</Link></span>
+          {/* The wrapper hides it: on the button itself, inline-flex would win over hidden. Left out on a room's
+              page, which has its own Book this room, and on the booking form itself: one primary button a screen. */}
+          {!hideBook && <span className="hidden sm:block"><Link to="/bookings/new" className={buttonClass('primary', 'small')}><Icon icon={CalendarPlus} size="sm" />Book a room</Link></span>}
           {currentUser ? (
-            <span title={currentUser.name} className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-brand-800 font-display text-[11px] font-semibold text-paper">
-              <span aria-hidden="true">{initials(currentUser.name)}</span>
-              <span className="sr-only">Signed in as {currentUser.name}</span>
-            </span>
+            <AccountMenu user={currentUser} onSignOut={() => onUserChange(null)} />
           ) : (
             <Link to="/sign-in" className={buttonClass('secondary', 'small')}>Sign in</Link>
           )}

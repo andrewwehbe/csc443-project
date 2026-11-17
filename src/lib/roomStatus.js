@@ -34,7 +34,8 @@ export function roomStatus(room, bookings, date, currentUser, now = new Date()) 
 
   const running = ahead.find((b) => b.from <= from);
   if (running && isOwner(running, currentUser)) return { word: `Yours until ${formatTime(running.end)}`, tone: 'yours' };
-  if (ahead.length === 0) return { word: 'Free all day', tone: 'free' };
+  // "All day" only while the whole day is still ahead; later on, say how long it stays free.
+  if (ahead.length === 0) return { word: from === OPEN ? 'Free all day' : `Free until ${hhmm(CLOSE)}`, tone: 'free' };
 
   // The free stretches between `from` and closing time.
   const gaps = [];

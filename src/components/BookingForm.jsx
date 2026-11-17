@@ -5,12 +5,19 @@ import { checkHouseRules } from '../lib/bookingRules.js';
 import { formToDraft, halfHourSlots, nearestFreeSlot, validateForm } from '../lib/bookingForm.js';
 import { whenPhrase } from '../lib/roomDetail.js';
 import { formatDate, formatTime } from '../lib/time.js';
+import { clock } from '../lib/quickBook.js';
 import { buttonClass } from '../lib/buttons.js';
 import { useUnsavedChangesWarning } from '../hooks/useUnsavedChangesWarning.js';
 import ConfirmDialog from './ConfirmDialog.jsx';
 import DayTimeline from './DayTimeline.jsx';
 import TimeSlotPicker from './TimeSlotPicker.jsx';
 import Field from './Field.jsx';
+
+// Every half hour the library is open, 08:00 to 22:00, in the same 24-hour style as the rest of the app
+// (a type="time" box shows "--:-- --" and AM/PM on many computers).
+const TIMES = Array.from({ length: 29 }, (_, i) => clock(8 * 60 + i * 30));
+// The words for "To book, add a room, a start time and …" under the button.
+const NEEDED = { roomId: 'a room', date: 'a date', start: 'a start time', end: 'an end time', purpose: 'what it is for', attendees: 'how many of you' };
 
 const inputClass =
   'w-full rounded-lg border border-ink/20 bg-surface px-3 py-2.5 text-sm text-ink focus:border-brand-600 focus:outline-none focus:ring-4 focus:ring-brand-100 aria-invalid:border-red-500 aria-invalid:focus:ring-red-100';
@@ -67,6 +74,16 @@ export default function BookingForm({ rooms, bookings, currentUser, initialForm,
     setSaveError('');
   }
 
+  // Why the button is greyed out, said next to it, so nobody has to guess.
+  function blockedReason() {
+    if (clash) return 'Resolve the clash to continue';
+    if (submitted) return 'Fix what is marked to continue';
+    const missing = Object.keys(errors).filter((name) => !form[name]).map((name) => NEEDED[name]);
+    if (missing.length === 0) return 'Fix what is marked to continue';
+    const list = missing.length === 1 ? missing[0] : `${missing.slice(0, -1).join(', ')} and ${missing.at(-1)}`;
+    return `To book, add ${list}.`;
+  }
+
   function handleSubmit(e) {
     e.preventDefault();
     setSubmitted(true);
@@ -107,8 +124,8 @@ export default function BookingForm({ rooms, bookings, currentUser, initialForm,
             <TimeSlotPicker slots={halfHourSlots(room.id, form.date, bookings, bookingId)} value={form.start} onPick={pickStart} />
           </div>
         )}
-        <Field label="From" name="start" error={errorFor('start')}><input type="time" {...fieldProps('start')} /></Field>
-        <Field label="To" name="end" error={errorFor('end')} hint="Two hours maximum."><input type="time" {...fieldProps('end')} /></Field>
+        <Field label="From" name="start" error={errorFor('start')}><TimeSelect times={TIMES.slice(0, -1)} {...fieldProps('start')} /></Field>
+        <Field label="To" name="end" error={errorFor('end')} hint="Two hours maximum."><TimeSelect times={TIMES.slice(1)} {...fieldProps('end')} /></Field>
       </div>
 
       {/* The house rules, checked while the time is chosen. Each refusal has its own panel and words. */}
@@ -155,11 +172,22 @@ export default function BookingForm({ rooms, bookings, currentUser, initialForm,
         <button type="submit" aria-disabled={blocked} className={`${buttonClass('primary')} ${blocked ? 'opacity-50' : ''}`}>{submitLabel}</button>
         <Link to="/my-bookings" className={buttonClass('quiet')}>Cancel</Link>
         <span className="flex-1" />
-        {blocked && (clash || submitted) && <span className="text-xs font-medium text-red-700">{clash ? 'Resolve the clash to continue' : 'Fix what is marked to continue'}</span>}
+        {blocked && <span className={`text-xs font-medium ${clash || submitted ? 'text-red-700' : 'text-muted'}`}>{blockedReason()}</span>}
       </div>
 
       <ConfirmDialog open={leaving.state === 'blocked'} title="Leave without saving?" message="The changes you made to this booking will be lost."
         confirmLabel="Leave" cancelLabel="Stay" onConfirm={() => leaving.proceed()} onCancel={() => leaving.reset()} />
     </form>
+  );
+}
+
+// A time as a list of half hours. A time that is not on the half hour (an older booking) is kept as an option.
+function TimeSelect({ times, value, ...props }) {
+  const options = value && !times.includes(value) ? [value, ...times].sort() : times;
+  return (
+    <select value={value} {...props}>
+      <option value="">Choose a time</option>
+      {options.map((time) => <option key={time} value={time}>{time}</option>)}
+    </select>
   );
 }
