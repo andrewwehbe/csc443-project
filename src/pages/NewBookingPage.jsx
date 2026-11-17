@@ -4,6 +4,8 @@ import { useSimulatedRequest } from '../hooks/useSimulatedRequest.js';
 import { emptyForm } from '../lib/bookingForm.js';
 import { formatDate, formatTime } from '../lib/time.js';
 import { buttonClass } from '../lib/buttons.js';
+import { CircleCheck } from 'lucide-react';
+import Icon from '../components/Icon.jsx';
 import LoadingState from '../components/states/LoadingState.jsx';
 import EmptyState from '../components/states/EmptyState.jsx';
 import ErrorState from '../components/states/ErrorState.jsx';
@@ -26,10 +28,18 @@ export default function NewBookingPage({ rooms, bookings, currentUser, simulatio
     content = <EmptyState title="No rooms to book" message="The library has not listed any study rooms yet." />;
   } else if (created) {
     const room = data.find((r) => r.id === created.roomId);
+    // The end of the flow is what people remember: say what happened and what comes next, quietly.
     content = (
-      <div role="status" className="max-w-3xl rounded-lg border-l-4 border-brand-700 bg-brand-50 p-4 text-sm font-semibold text-brand-900">
-        Booked {room.name} for {formatDate(created.start)}, {formatTime(created.start)} to {formatTime(created.end)}.
-        <p className="mt-3 flex flex-wrap gap-2">
+      <div role="status" className="pop-in max-w-3xl origin-top-left rounded-xl border border-line bg-surface p-6">
+        <div className="flex items-start gap-3">
+          <span className="mt-0.5 text-brand-700"><Icon icon={CircleCheck} /></span>
+          <div>
+            <p className="font-display text-xl font-semibold tracking-tight text-ink">{room.name} is yours</p>
+            <p className="mt-1 text-sm text-ink">{formatDate(created.start)}, {formatTime(created.start)} to {formatTime(created.end)} · {created.purpose}</p>
+            <p className="mt-1 text-sm text-muted">It is in My bookings, where you can change or cancel it until it starts.</p>
+          </div>
+        </div>
+        <p className="mt-5 flex flex-wrap gap-2">
           <Link to="/my-bookings" className={buttonClass('primary', 'small')}>See my bookings</Link>
           <button type="button" onClick={() => setCreated(null)} className={buttonClass('quiet', 'small')}>Book another</button>
         </p>

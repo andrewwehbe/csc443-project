@@ -32,7 +32,7 @@ export default function Layout({ users, currentUser, onUserChange, simulation, o
   const { pathname } = useLocation();
   const current = section(pathname);
   const fullBleed = pathname === '/sign-in' || pathname === '/register';
-  const hideBook = pathname.startsWith('/rooms/') || pathname.startsWith('/bookings');
+  const hideBook = pathname === '/' || pathname.startsWith('/rooms/') || pathname.startsWith('/bookings');
 
   return (
     <div className="flex min-h-screen flex-col pb-16 md:pb-0">
@@ -63,8 +63,8 @@ export default function Layout({ users, currentUser, onUserChange, simulation, o
             ))}
           </nav>
           <span className="flex-1" />
-          {/* The wrapper hides it: on the button itself, inline-flex would win over hidden. Left out on a room's
-              page, which has its own Book this room, and on the booking form itself: one primary button a screen. */}
+          {/* The wrapper hides it: on the button itself, inline-flex would win over hidden. Left out where the page
+              has its own (Today's hero, a room's Book this room) and on the booking form: one primary button a screen. */}
           {!hideBook && <span className="hidden sm:block"><Link to="/bookings/new" className={buttonClass('primary', 'small')}><Icon icon={CalendarPlus} size="sm" />Book a room</Link></span>}
           {currentUser ? (
             <AccountMenu user={currentUser} onSignOut={() => onUserChange(null)} />

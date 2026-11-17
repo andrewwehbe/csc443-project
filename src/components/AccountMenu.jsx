@@ -29,12 +29,12 @@ export default function AccountMenu({ user, onSignOut }) {
   return (
     <div ref={rootRef} className="relative">
       <button type="button" aria-expanded={open} aria-haspopup="true" onClick={() => setOpen(!open)}
-        className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-brand-800 font-display text-[11px] font-semibold text-paper hover:bg-brand-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-800">
+        className="hit-area relative inline-flex h-8 w-8 items-center justify-center rounded-full bg-brand-800 font-display text-[11px] font-semibold text-paper hover:bg-brand-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-800">
         <span aria-hidden="true">{initials(user.name)}</span>
         <span className="sr-only">Account: {user.name}</span>
       </button>
       {open && (
-        <div className="absolute right-0 top-full z-30 mt-2 w-56 rounded-xl border border-line bg-surface p-1.5">
+        <div className="pop-in absolute right-0 top-full z-30 mt-2 w-56 origin-top-right rounded-xl border border-line bg-surface p-1.5">
           <p className="px-3 pb-2 pt-1.5 text-xs text-muted">Signed in as <span className="block text-sm font-semibold text-ink">{user.name}</span></p>
           <Link to="/my-bookings" onClick={() => setOpen(false)} className={item}><Icon icon={CalendarCheck} size="sm" />My bookings</Link>
           <button type="button" onClick={() => { setOpen(false); onSignOut(); }} className={item}><Icon icon={LogOut} size="sm" />Sign out</button>

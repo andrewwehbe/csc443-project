@@ -126,7 +126,6 @@ export default function RoomPage({ rooms, bookings, currentUser, simulation, can
 
 // The band under the room's header. What it offers depends on who is looking, asked per booking with isOwner.
 function ActionBand({ room, bookings, currentUser, cancelBooking }) {
-  const [confirming, setConfirming] = useState(false);
   const [message, setMessage] = useState('');
   const band = 'mt-6 flex flex-wrap items-center gap-3 rounded-xl border border-ink/20 bg-brand-50 px-5 py-4';
   const now = new Date();
@@ -152,32 +151,21 @@ function ActionBand({ room, bookings, currentUser, cancelBooking }) {
   const mine = nextOwnBooking(room.id, bookings, currentUser, now);
   if (mine) {
     const when = `${whenPhrase(mine.start, now)}, ${formatTime(mine.start)} to ${formatTime(mine.end)}`;
+    // No "are you sure?": the cancel happens at once and the message at the bottom (App) offers Undo.
+    // Only a refusal is said here; a cancel that works is said by that message.
     function cancel() {
       const result = cancelBooking(mine.id);
-      setConfirming(false);
-      setMessage(result.ok ? `Your booking ${when} was cancelled.` : result.problems[0].message);
+      setMessage(result.ok ? '' : result.problems[0].message);
     }
     return (
       <div className={band}>
-        {confirming ? (
-          <>
-            <span className="text-sm text-ink" role="alert">Cancel your booking {when}? This cannot be undone.</span>
-            <span className="flex-1" />
-            {/* Focus moves here so a keyboard user lands on the safe choice, not the destructive one. */}
-            <button type="button" className={quiet} onClick={() => setConfirming(false)} autoFocus>Keep it</button>
-            <button type="button" className={destructive} onClick={cancel}>Yes, cancel it</button>
-          </>
-        ) : (
-          <>
-            <span className="text-sm text-ink">
-              {message && <span role="status" className="mb-1 block">{message}</span>}
-              <strong className="font-semibold">You have this room {when}.</strong>
-            </span>
-            <span className="flex-1" />
-            <Link to={`/bookings/${mine.id}/edit`} className={secondary}>Change the time</Link>
-            <button type="button" className={destructive} onClick={() => setConfirming(true)}>Cancel booking</button>
-          </>
-        )}
+        <span className="text-sm text-ink">
+          {message && <span role="status" className="mb-1 block">{message}</span>}
+          <strong className="font-semibold">You have this room {when}.</strong>
+        </span>
+        <span className="flex-1" />
+        <Link to={`/bookings/${mine.id}/edit`} className={secondary}>Change the time</Link>
+        <button type="button" className={destructive} onClick={cancel}>Cancel booking</button>
       </div>
     );
   }

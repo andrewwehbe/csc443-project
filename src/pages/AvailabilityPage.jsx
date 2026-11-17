@@ -81,7 +81,7 @@ function AmenityDropdown({ selected, onToggle }) {
       </button>
       {open && (
         // The fallback keeps the list opaque until the Ghurfa theme defines surface.
-        <div role="group" aria-label="Must have" className="absolute left-0 top-full z-10 mt-1 w-full rounded-lg border border-line bg-[var(--color-surface,white)] p-1">
+        <div role="group" aria-label="Must have" className="pop-in absolute left-0 top-full z-10 mt-1 w-full origin-top rounded-lg border border-line bg-[var(--color-surface,white)] p-1">
           {AMENITIES.map((amenity) => (
             <label key={amenity} className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-ink hover:bg-brand-50">
               <input type="checkbox" checked={selected.includes(amenity)} onChange={() => onToggle(amenity)} className="accent-brand-800" />
@@ -111,7 +111,8 @@ function MatchToggle({ exact, onChange }) {
           aria-pressed={exact === value}
           onClick={() => onChange(value)}
           className={`border px-3 py-2.5 text-sm ${i === 0 ? 'rounded-l-lg' : '-ml-px rounded-r-lg'} ${
-            exact === value ? 'border-brand-800 bg-brand-800 text-[var(--color-paper,white)]' : 'border-ink/20 bg-surface text-ink hover:bg-brand-50'
+            // The chosen one is tinted, not filled: a filled navy button would compete with the page's one primary.
+            exact === value ? 'relative border-brand-800 bg-brand-50 font-semibold text-brand-900' : 'border-ink/20 bg-surface text-ink hover:bg-brand-50'
           }`}
         >
           {label}
@@ -247,7 +248,7 @@ export default function AvailabilityPage({ rooms, bookings, currentUser, simulat
                     aria-label="Clear capacity"
                     title="Clear capacity"
                     onClick={clearCapacity}
-                    className="absolute right-1 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-md text-base leading-none text-muted hover:bg-brand-50 hover:text-ink"
+                    className="hit-area absolute right-1 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-md text-base leading-none text-muted hover:bg-brand-50 hover:text-ink"
                   >
                     &times;
                   </button>

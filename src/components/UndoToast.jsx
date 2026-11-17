@@ -13,7 +13,7 @@ export default function UndoToast({ toast, onUndo, onDone, seconds = 6 }) {
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-20 z-40 flex justify-center px-4 md:bottom-6">
       {/* key: a new toast restarts the ring from full */}
-      <div key={toast.id} role="status" className="undo-toast pointer-events-auto flex items-center gap-3 rounded-full bg-brand-900 py-2 pl-3 pr-2 text-sm text-paper">
+      <div key={toast.id} role="status" className="undo-toast toast-in pointer-events-auto flex items-center gap-3 rounded-full bg-brand-900 py-2 pl-3 pr-2 text-sm text-paper">
         <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true" className="-rotate-90">
           <circle cx="9" cy="9" r="7" fill="none" stroke="currentColor" strokeOpacity="0.25" strokeWidth="2" />
           <circle cx="9" cy="9" r="7" fill="none" stroke="var(--color-accent-400)" strokeWidth="2" strokeDasharray={ring}
@@ -21,11 +21,11 @@ export default function UndoToast({ toast, onUndo, onDone, seconds = 6 }) {
         </svg>
         <span>{toast.message}</span>
         {toast.canUndo ? (
-          <button type="button" onClick={onUndo} className="inline-flex items-center gap-1.5 rounded-full bg-paper/10 px-3 py-1 font-semibold text-paper hover:bg-paper/20 focus-visible:outline-2 focus-visible:outline-accent-400">
+          <button type="button" onClick={onUndo} className="hit-area relative inline-flex items-center gap-1.5 rounded-full bg-paper/10 px-3 py-1 font-semibold text-paper hover:bg-paper/20 focus-visible:outline-2 focus-visible:outline-accent-400">
             <Icon icon={RotateCcw} size="sm" />Undo
           </button>
         ) : (
-          <button type="button" onClick={onDone} className="rounded-full px-3 py-1 font-semibold text-paper/80 hover:text-paper">Close</button>
+          <button type="button" onClick={onDone} className="hit-area relative rounded-full px-3 py-1 font-semibold text-paper/80 hover:text-paper">Close</button>
         )}
       </div>
     </div>

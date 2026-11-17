@@ -7,6 +7,8 @@ import { MAX_MINUTES } from '../lib/bookingRules.js';
 import { formatLongDay, shiftDay } from '../lib/availabilityFilters.js';
 import { dateKey } from '../lib/time.js';
 import { buttonClass } from '../lib/buttons.js';
+import { CalendarPlus } from 'lucide-react';
+import Icon from '../components/Icon.jsx';
 import DayTimeline, { TimelineLegend } from '../components/DayTimeline.jsx';
 import LoadingState from '../components/states/LoadingState.jsx';
 import EmptyState from '../components/states/EmptyState.jsx';
@@ -88,8 +90,9 @@ export default function HomePage({ rooms, bookings, currentUser, simulation }) {
           exists to stop two groups walking into the same door.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
-          <Link to="/availability" className={buttonClass('primary')}>Find a room</Link>
-          <Link to="/rooms" className={buttonClass('secondary')}>Browse by floor</Link>
+          {/* Booking is what people come for, so it is the page's one primary (the header hides its own here). */}
+          <Link to="/bookings/new" className={buttonClass('primary')}><Icon icon={CalendarPlus} size="sm" />Book a room</Link>
+          <Link to="/availability" className={buttonClass('secondary')}>Find a free room</Link>
         </div>
       </section>
 
@@ -99,7 +102,7 @@ export default function HomePage({ rooms, bookings, currentUser, simulation }) {
           <nav aria-label="Which rooms to list" className="flex rounded-lg border border-line bg-surface p-0.5 text-sm">
             {Object.entries(SPANS).map(([key, { label, to }]) => (
               <Link key={key} to={to} aria-current={key === span ? 'page' : undefined}
-                className={`rounded-md px-3 py-1.5 ${key === span ? 'bg-brand-800 font-medium text-paper' : 'text-muted hover:text-ink'}`}>
+                className={`rounded-md px-3 py-1.5 ${key === span ? 'bg-brand-50 font-semibold text-brand-900' : 'text-muted hover:text-ink'}`}>
                 {label}
               </Link>
             ))}
@@ -153,7 +156,7 @@ function RoomRow({ room, bookings, today, now, currentUser }) {
 
 // The list came back empty: say why, and offer the next place to look.
 function NothingFree({ span, now }) {
-  // Secondary: the hero's "Find a room" is the page's one primary button.
+  // Secondary: the hero's "Book a room" is the page's one primary button.
   const small = buttonClass('secondary', 'small');
   const wholeDay = <Link to="/?show=day" className={small}>See the rest of today</Link>;
   const tomorrow = <Link to={`/availability?date=${shiftDay(dateKey(now), 1)}`} className={small}>See tomorrow</Link>;
