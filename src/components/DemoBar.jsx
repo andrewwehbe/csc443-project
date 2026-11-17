@@ -24,7 +24,7 @@ export default function DemoBar({ users, currentUser, onUserChange, simulation, 
           <select
             value={currentUser ? currentUser.id : ''}
             onChange={handleUserChange}
-            className="rounded-md border border-slate-600 bg-slate-800 px-2 py-1 text-base sm:text-sm"
+            className="rounded-lg border border-paper bg-paper px-2.5 py-1 text-base font-medium text-ink hover:bg-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-500 sm:text-sm"
           >
             <option value="">Nobody (signed out)</option>
             {users.map(({ id, name }) => (
@@ -37,7 +37,7 @@ export default function DemoBar({ users, currentUser, onUserChange, simulation, 
           <select
             value={simulation}
             onChange={(e) => onSimulationChange(e.target.value)}
-            className="rounded-md border border-slate-600 bg-slate-800 px-2 py-1 text-base sm:text-sm"
+            className="rounded-lg border border-paper bg-paper px-2.5 py-1 text-base font-medium text-ink hover:bg-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-500 sm:text-sm"
           >
             {MODES.map(({ value, label }) => (
               <option key={value} value={value}>{label}</option>
