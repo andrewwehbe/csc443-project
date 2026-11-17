@@ -77,7 +77,7 @@ export default function HomePage({ rooms, bookings, currentUser, simulation }) {
 
   return (
     <div>
-      <section className="border border-line bg-surface px-6 py-10 sm:px-10 sm:py-14">
+      <section className="rounded-xl border border-line bg-surface px-6 py-10 sm:px-10 sm:py-14">
         <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">{formatLongDay(today)} · open 08:00 to 22:00</p>
         <h1 className="mt-4 max-w-2xl font-display text-5xl font-semibold leading-[1.02] tracking-tight text-ink">
           {lead}<br />{rest}
@@ -105,7 +105,7 @@ export default function HomePage({ rooms, bookings, currentUser, simulation }) {
       <section className="mt-14 grid gap-6 sm:grid-cols-3">
         <h2 className="sr-only">The house rules</h2>
         {RULES.map(({ figure, title, text }) => (
-          <div key={title} className="border border-line bg-surface p-6">
+          <div key={title} className="rounded-xl border border-line bg-surface p-6">
             <p className="font-display text-3xl font-semibold text-accent-600">{figure}</p>
             <h3 className="mt-2 font-display text-lg font-semibold tracking-tight text-ink">{title}</h3>
             <p className="mt-1.5 text-sm text-muted">{text}</p>
@@ -123,7 +123,7 @@ function RoomRow({ room, bookings, today, now, currentUser }) {
   const nothingBooked = !roomBookings.some((b) => b.status !== 'cancelled' && dateKey(b.start) === today);
 
   return (
-    <li className="relative border border-line bg-surface px-5 py-4">
+    <li className="relative rounded-xl border border-line bg-surface px-5 py-4">
       <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
         <h3 className="font-display text-lg font-semibold tracking-tight text-ink">
           {/* after:inset-0 stretches the link over the card, so the whole card opens the room. */}

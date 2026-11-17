@@ -17,7 +17,7 @@ import { isOwner } from '../lib/ownership.js';
 // From md up it is a bar; below md a list of hours, because a 14-hour bar is unreadable on a phone and
 // nothing may scroll sideways. Screen readers get a plain list of the bookings, never colours alone.
 
-const segmentClass = 'flex h-full items-center justify-center overflow-hidden rounded-[1px] px-1 text-[11px] font-medium leading-none';
+const segmentClass = 'flex h-full items-center justify-center overflow-hidden rounded-sm px-1 text-[11px] font-medium leading-none';
 const kindClass = {
   booked: 'bg-brand-200 text-brand-900',
   yours: 'bg-brand-800 text-paper',
@@ -57,7 +57,7 @@ export default function DayTimeline({ bookings, date, currentUser, chosen = null
               ))}
             </div>
           )}
-          <div className="@container relative h-8 overflow-hidden rounded-[2px] border border-line bg-paper p-0.5">
+          <div className="@container relative h-8 overflow-hidden rounded-md border border-line bg-paper p-0.5">
             <div className="flex h-full gap-px">
               {parts.map((part, i) =>
                 part.type === 'gap' ? (
@@ -80,7 +80,7 @@ export default function DayTimeline({ bookings, date, currentUser, chosen = null
             {/* Drawn on top of the bookings, not beside them, so an overlap is literally visible. */}
             {overlay && (
               <div
-                className={`absolute inset-y-0.5 flex items-center justify-center overflow-hidden rounded-[1px] px-1 text-[11px] leading-none ${overlayClass[overlayKind]}`}
+                className={`absolute inset-y-0.5 flex items-center justify-center overflow-hidden rounded-sm px-1 text-[11px] leading-none ${overlayClass[overlayKind]}`}
                 style={{ left: `${overlay.left}%`, width: `${overlay.width}%` }}
                 title={rangeTitle(overlay.from, overlay.to)}
               >
@@ -99,7 +99,7 @@ export default function DayTimeline({ bookings, date, currentUser, chosen = null
           {hourRows(blocks, overlay && { ...chosen, clash }).map((row) => (
             <li key={row.hour} className="flex items-stretch gap-2">
               <span className="w-11 flex-none pt-1 font-mono text-[11px] tabular-nums text-muted">{row.hour}</span>
-              <span className={`flex-1 rounded-[2px] px-2 py-1.5 text-xs ${rowClass[row.kind]}`}>
+              <span className={`flex-1 rounded-md px-2 py-1.5 text-xs ${rowClass[row.kind]}`}>
                 {rowWord[row.kind]}{row.until && ` · until ${row.until}`}
               </span>
             </li>
@@ -116,11 +116,11 @@ export default function DayTimeline({ bookings, date, currentUser, chosen = null
 export function TimelineLegend() {
   return (
     <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-line pt-4 text-xs text-muted" aria-hidden="true">
-      <span className="flex items-center gap-2"><span className="h-3 w-7 rounded-[1px] border border-line bg-paper" />Free</span>
-      <span className="flex items-center gap-2"><span className="h-3 w-7 rounded-[1px] bg-brand-200" />Booked by someone else</span>
-      <span className="flex items-center gap-2"><span className="h-3 w-7 rounded-[1px] bg-brand-800" />Yours</span>
-      <span className="flex items-center gap-2"><span className="h-3 w-7 rounded-[1px] bg-accent-100 ring-2 ring-inset ring-accent-500" />Being chosen</span>
-      <span className="flex items-center gap-2"><span className="h-3 w-7 rounded-[1px] bg-red-100 ring-2 ring-inset ring-red-600" />Clashes</span>
+      <span className="flex items-center gap-2"><span className="h-3 w-7 rounded-sm border border-line bg-paper" />Free</span>
+      <span className="flex items-center gap-2"><span className="h-3 w-7 rounded-sm bg-brand-200" />Booked by someone else</span>
+      <span className="flex items-center gap-2"><span className="h-3 w-7 rounded-sm bg-brand-800" />Yours</span>
+      <span className="flex items-center gap-2"><span className="h-3 w-7 rounded-sm bg-accent-100 ring-2 ring-inset ring-accent-500" />Being chosen</span>
+      <span className="flex items-center gap-2"><span className="h-3 w-7 rounded-sm bg-red-100 ring-2 ring-inset ring-red-600" />Clashes</span>
     </div>
   );
 }

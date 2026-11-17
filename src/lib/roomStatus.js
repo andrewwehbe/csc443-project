@@ -58,7 +58,7 @@ export function roomStatus(room, bookings, date, currentUser, now = new Date()) 
 
 // The chip around the word, as in the pack's components.html: a bordered box, coloured by tone.
 //   <span className={statusChipClass(status.tone)}>{status.word}</span>
-const chipBase = 'inline-flex items-center border px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wide';
+const chipBase = 'inline-flex items-center rounded-md border px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wide';
 const chipTone = {
   free: 'border-brand-300 text-brand-800',
   busy: 'border-accent-500 text-accent-800',

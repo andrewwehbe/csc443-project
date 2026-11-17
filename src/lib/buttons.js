@@ -8,5 +8,5 @@ const kinds = {
 
 export function buttonClass(kind, size = 'normal') {
   const padding = size === 'small' ? 'px-3 py-1.5 text-xs' : 'px-4 py-2.5 text-sm';
-  return `inline-flex items-center justify-center gap-2 rounded font-medium transition focus-visible:outline-2 focus-visible:outline-offset-2 ${padding} ${kinds[kind]}`;
+  return `inline-flex items-center justify-center gap-2 rounded-lg font-medium transition focus-visible:outline-2 focus-visible:outline-offset-2 ${padding} ${kinds[kind]}`;
 }

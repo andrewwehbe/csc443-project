@@ -17,9 +17,9 @@ import ErrorState from '../components/states/ErrorState.jsx';
 
 const labelClass = 'text-[11px] font-semibold uppercase tracking-[0.14em] text-muted';
 const inputClass =
-  'w-full rounded border border-ink/20 bg-surface px-3 py-2.5 text-sm text-ink placeholder:text-muted/60 focus:border-brand-600 focus:outline-none focus:ring-4 focus:ring-brand-100';
+  'w-full rounded-lg border border-ink/20 bg-surface px-3 py-2.5 text-sm text-ink placeholder:text-muted/60 focus:border-brand-600 focus:outline-none focus:ring-4 focus:ring-brand-100';
 const buttonClass =
-  'inline-flex items-center justify-center gap-2 rounded px-4 py-2.5 text-xs font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2';
+  'inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-xs font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2';
 const outlineButton = `${buttonClass} border border-ink/20 bg-surface text-ink hover:bg-brand-50`;
 const quietButton = `${buttonClass} text-muted hover:bg-brand-50 hover:text-ink`;
 
@@ -79,9 +79,9 @@ function AmenityDropdown({ selected, onToggle }) {
       </button>
       {open && (
         // The fallback keeps the list opaque until the Ghurfa theme defines surface.
-        <div role="group" aria-label="Must have" className="absolute left-0 top-full z-10 mt-1 w-full border border-line bg-[var(--color-surface,white)] p-1">
+        <div role="group" aria-label="Must have" className="absolute left-0 top-full z-10 mt-1 w-full rounded-lg border border-line bg-[var(--color-surface,white)] p-1">
           {AMENITIES.map((amenity) => (
-            <label key={amenity} className="flex items-center gap-2 rounded px-2 py-1.5 text-sm text-ink hover:bg-brand-50">
+            <label key={amenity} className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-ink hover:bg-brand-50">
               <input type="checkbox" checked={selected.includes(amenity)} onChange={() => onToggle(amenity)} className="accent-brand-800" />
               {capitalise(amenity)}
             </label>
@@ -109,7 +109,7 @@ function MatchToggle({ exact, onChange }) {
           title={label}
           aria-pressed={exact === value}
           onClick={() => onChange(value)}
-          className={`border px-3 py-2.5 text-sm ${i === 0 ? 'rounded-l' : '-ml-px rounded-r'} ${
+          className={`border px-3 py-2.5 text-sm ${i === 0 ? 'rounded-l-lg' : '-ml-px rounded-r-lg'} ${
             exact === value ? 'border-brand-800 bg-brand-800 text-[var(--color-paper,white)]' : 'border-ink/20 bg-surface text-ink hover:bg-brand-50'
           }`}
         >
@@ -168,7 +168,7 @@ export default function AvailabilityPage({ rooms, simulation }) {
     content = (
       <ul className="space-y-3">
         {matches.map((room) => (
-          <li key={room.id} className="border border-line bg-surface px-5 py-4">
+          <li key={room.id} className="rounded-xl border border-line bg-surface px-5 py-4">
             <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
               <h2 className="font-display text-lg font-semibold tracking-tight text-ink">
                 <Link to={`/rooms/${room.id}`}>{room.name}</Link>
@@ -188,7 +188,7 @@ export default function AvailabilityPage({ rooms, simulation }) {
       <p className="mt-2 text-sm text-muted">{formatLongDay(filters.date)}</p>
 
       <div className="mt-6 space-y-5">
-        <form onSubmit={(e) => e.preventDefault()} className="flex select-none flex-wrap items-end gap-3 border border-line bg-surface p-4">
+        <form onSubmit={(e) => e.preventDefault()} className="flex select-none flex-wrap items-end gap-3 rounded-xl border border-line bg-surface p-4">
           <div className="flex items-end gap-2">
             <button type="button" aria-label="Previous day" onClick={() => update({ date: shiftDay(filters.date, -1) })} className={outlineButton}>
               &larr;
@@ -227,7 +227,7 @@ export default function AvailabilityPage({ rooms, simulation }) {
                     aria-label="Clear capacity"
                     title="Clear capacity"
                     onClick={clearCapacity}
-                    className="absolute right-1 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded text-base leading-none text-muted hover:bg-brand-50 hover:text-ink"
+                    className="absolute right-1 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-md text-base leading-none text-muted hover:bg-brand-50 hover:text-ink"
                   >
                     &times;
                   </button>

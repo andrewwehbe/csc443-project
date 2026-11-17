@@ -91,7 +91,7 @@ function RoomCard({ room, bookings, currentUser }) {
   const status = roomStatus(room, bookings, today, currentUser, now) ?? { word: 'Closed', tone: 'off' };
 
   return (
-    <Link to={`/rooms/${room.id}`} className="block border border-line bg-surface p-5 transition hover:border-brand-400">
+    <Link to={`/rooms/${room.id}`} className="block rounded-xl border border-line bg-surface p-5 transition hover:border-brand-400">
       <div className="flex items-baseline justify-between gap-3">
         <h2 className="font-display text-xl font-semibold tracking-tight text-ink">{room.name}</h2>
         <span className={statusChipClass(status.tone)}>{status.word}</span>
@@ -106,9 +106,9 @@ function RoomCard({ room, bookings, currentUser }) {
       <div className="mt-4">
         {outOfService ? (
           // A room out of service still appears, but its whole day is closed: it accepts nothing.
-          <div className="h-8 overflow-hidden rounded-[2px] border border-line bg-paper p-0.5">
+          <div className="h-8 overflow-hidden rounded-md border border-line bg-paper p-0.5">
             <div className="flex h-full gap-px">
-              <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-[1px] px-1 text-[11px] font-medium leading-none bg-brand-200 text-brand-900" title="08:00–22:00">
+              <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-sm px-1 text-[11px] font-medium leading-none bg-brand-200 text-brand-900" title="08:00–22:00">
                 Closed all day
               </div>
             </div>

@@ -74,5 +74,5 @@ test('a day that is over has no status', () => {
 test('each tone gets the pack chip classes', () => {
   assert.match(statusChipClass('free'), /border-brand-300 text-brand-800/);
   assert.match(statusChipClass('yours'), /bg-brand-800 text-paper/);
-  assert.match(statusChipClass('off'), /^inline-flex items-center border px-2 py-0\.5 font-mono/);
+  assert.match(statusChipClass('off'), /^inline-flex items-center rounded-md border px-2 py-0\.5 font-mono/);
 });

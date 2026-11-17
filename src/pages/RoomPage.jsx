@@ -19,7 +19,7 @@ const primary = buttonClass('primary', 'small');
 const secondary = buttonClass('secondary', 'small');
 const quiet = buttonClass('quiet', 'small');
 // The shared buttons have no destructive kind, so this one keeps the pack's red button here.
-const destructive = 'inline-flex items-center justify-center gap-2 rounded px-3 py-1.5 text-xs font-medium transition focus-visible:outline-2 focus-visible:outline-offset-2 bg-red-800 text-white hover:bg-red-900';
+const destructive = 'inline-flex items-center justify-center gap-2 rounded-lg px-3 py-1.5 text-xs font-medium transition focus-visible:outline-2 focus-visible:outline-offset-2 bg-red-800 text-white hover:bg-red-900';
 const HOURS = ['08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21'];
 
 export default function RoomPage({ rooms, bookings, currentUser, simulation, cancelBooking }) {
@@ -70,7 +70,7 @@ export default function RoomPage({ rooms, bookings, currentUser, simulation, can
             })}
           </ul>
         </div>
-        <div className="w-full max-w-sm border border-line bg-surface p-1 sm:w-auto sm:min-w-72">
+        <div className="w-full max-w-sm overflow-hidden rounded-xl border border-line bg-surface p-1 sm:w-auto sm:min-w-72">
           <img
             src={`${import.meta.env.BASE_URL}${data.photo}`}
             alt={`Floor plan of ${data.name}: a table for ${data.capacity}`}
@@ -90,7 +90,7 @@ export default function RoomPage({ rooms, bookings, currentUser, simulation, can
           <button type="button" className={secondary} onClick={() => showWeek(week + 1)}>Next week</button>
         </div>
 
-        <div className="mt-4 border border-line bg-surface p-5">
+        <div className="mt-4 rounded-xl border border-line bg-surface p-5">
           <div className="hidden items-center gap-3 md:flex" aria-hidden="true">
             <span className="w-14 flex-none" />
             <div className="flex min-w-0 flex-1">
@@ -127,7 +127,7 @@ export default function RoomPage({ rooms, bookings, currentUser, simulation, can
 function ActionBand({ room, bookings, currentUser, cancelBooking }) {
   const [confirming, setConfirming] = useState(false);
   const [message, setMessage] = useState('');
-  const band = 'mt-6 flex flex-wrap items-center gap-3 border border-ink/20 bg-brand-50 px-5 py-4';
+  const band = 'mt-6 flex flex-wrap items-center gap-3 rounded-xl border border-ink/20 bg-brand-50 px-5 py-4';
   const now = new Date();
 
   if (room.status === 'out-of-service') {

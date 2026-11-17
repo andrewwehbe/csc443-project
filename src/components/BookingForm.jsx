@@ -10,7 +10,7 @@ import DayTimeline from './DayTimeline.jsx';
 import Field from './Field.jsx';
 
 const inputClass =
-  'w-full rounded border border-ink/20 bg-surface px-3 py-2.5 text-sm text-ink focus:border-brand-600 focus:outline-none focus:ring-4 focus:ring-brand-100 aria-invalid:border-red-500 aria-invalid:focus:ring-red-100';
+  'w-full rounded-lg border border-ink/20 bg-surface px-3 py-2.5 text-sm text-ink focus:border-brand-600 focus:outline-none focus:ring-4 focus:ring-brand-100 aria-invalid:border-red-500 aria-invalid:focus:ring-red-100';
 
 // The form behind New booking and Edit booking (design pack 05). Every keystroke updates `form`, React
 // re-renders, and the fields and the house rules are checked again, so a clash shows before submit.
@@ -94,7 +94,7 @@ export default function BookingForm({ rooms, bookings, currentUser, initialForm,
       {/* The house rules, checked while the time is chosen. Each refusal has its own panel and words. */}
       <div aria-live="polite" className="space-y-4">
         {clash && (
-          <div className="border-l-4 border-red-600 bg-red-50 p-4 text-red-900">
+          <div className="rounded-lg border-l-4 border-red-600 bg-red-50 p-4 text-red-900">
             <p className="text-sm font-semibold">{form.start} to {form.end} clashes with a booking already on {room.name}.</p>
             <p className="mt-1 text-xs">
               It is taken from {formatTime(clash.start)} to {formatTime(clash.end)}.{' '}
@@ -108,13 +108,13 @@ export default function BookingForm({ rooms, bookings, currentUser, initialForm,
           </div>
         )}
         {draft && problems.length === 0 && (
-          <div className="border-l-4 border-brand-700 bg-brand-50 p-4 text-brand-900">
+          <div className="rounded-lg border-l-4 border-brand-700 bg-brand-50 p-4 text-brand-900">
             <p className="text-sm font-semibold">{form.start} to {form.end} is free on {room.name}.</p>
             {timeline}
           </div>
         )}
         {sameDay && (
-          <div className="border-l-4 border-accent-500 bg-accent-50 p-4 text-accent-900">
+          <div className="rounded-lg border-l-4 border-accent-500 bg-accent-50 p-4 text-accent-900">
             <p className="text-sm font-semibold">You already have a room {whenPhrase(sameDay.start)}.</p>
             <p className="mt-1 text-xs">
               {rooms.find((r) => r.id === sameDay.roomId).name}, {formatTime(sameDay.start)} to {formatTime(sameDay.end)}. Cancel that one first if you want a different slot.
