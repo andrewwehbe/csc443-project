@@ -70,9 +70,14 @@ export default function AuthStage({ kicker = 'Ghurfa', title, hint, children, li
         .auth-stage .auth {
           position: relative;
           z-index: 1;
-          width: 100%;
-          max-width: 28rem;
-          padding: 3rem 1.5rem;
+          width: calc(100% - 2rem);
+          max-width: 30rem;
+          margin: 2.5rem 1rem;
+          padding: 2.75rem 2.25rem;
+          /* A light card above the bubbles, so the text never sits on navy. */
+          border: 1px solid var(--color-line);
+          border-radius: 1rem;
+          background: var(--color-surface);
         }
         .auth-stage .kicker {
           display: block;
@@ -157,7 +162,7 @@ export default function AuthStage({ kicker = 'Ghurfa', title, hint, children, li
           z-index: 0;
           width: 100%;
           height: 100%;
-          border-radius: 2px;
+          border-radius: 0.5rem;
           background: var(--mercury);
           transform: translate(-50%, -50%);
           transition: transform 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -168,6 +173,7 @@ export default function AuthStage({ kicker = 'Ghurfa', title, hint, children, li
           z-index: 1;
           width: 100%;
           border: none;
+          border-radius: 0.5rem;
           background: var(--color-brand-800);
           padding: 1.05rem 1.5rem;
           font-size: 0.8rem;
