@@ -7,6 +7,7 @@ import { dateKey } from '../lib/time.js';
 import DayTimeline from '../components/DayTimeline.jsx';
 import LoadingState from '../components/states/LoadingState.jsx';
 import EmptyState from '../components/states/EmptyState.jsx';
+import BusyHours from '../components/BusyHours.jsx';
 import ErrorState from '../components/states/ErrorState.jsx';
 
 // Surface: The floor, at /rooms (design pack 04-building.html). Owner: Elio El Koussa.
@@ -43,11 +44,12 @@ export default function FloorPage({ rooms, bookings, currentUser, simulation }) 
             <p className="max-w-prose text-sm text-muted">
               {roomCount(data.length)}. Capacity and equipment are fixed by the library; pick a room to see its week and book it.
             </p>
-            <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
               {data.map((room) => (
                 <RoomCard key={room.id} room={room} bookings={bookings} currentUser={currentUser} />
               ))}
             </div>
+            <div className="mt-10"><BusyHours bookings={bookings} /></div>
           </>
         )}
       </div>
