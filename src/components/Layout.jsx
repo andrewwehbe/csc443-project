@@ -3,6 +3,7 @@ import { CalendarPlus } from 'lucide-react';
 import { buttonClass } from '../lib/buttons.js';
 import { frame } from '../lib/frame.js';
 import DemoBar from './DemoBar.jsx';
+import MobileTabBar from './MobileTabBar.jsx';
 import Icon from './Icon.jsx';
 import Logo, { LogoMark } from './Logo.jsx';
 
@@ -31,7 +32,7 @@ export default function Layout({ users, currentUser, onUserChange, simulation, o
   const fullBleed = pathname === '/sign-in' || pathname === '/register';
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col pb-16 md:pb-0">
       <DemoBar
         users={users}
         currentUser={currentUser}
@@ -82,6 +83,8 @@ export default function Layout({ users, currentUser, onUserChange, simulation, o
           <span><span className="font-display font-bold tracking-wide text-ink">GHURFA</span> · CSC443 Web Programming · Fall 2026 · Team Not_vibeCoding</span>
         </footer>
       )}
+
+      <MobileTabBar />
     </div>
   );
 }

@@ -46,3 +46,19 @@ test('a clash suggests the nearest free stretch of the same length', () => {
   const allDay = { ...taken, start: atTime(1, '08:00', now), end: atTime(1, '22:00', now) };
   assert.equal(nearestFreeSlot(draft, [allDay], now), null);
 });
+
+test('halfHourSlots marks taken and past half hours, and leaves out the booking being edited', async () => {
+  const { halfHourSlots } = await import('./bookingForm.js');
+  const { toISO } = await import('./time.js');
+  const day = '2030-01-07';
+  const others = [{ id: 'x', roomId: 'r1', status: 'confirmed', start: toISO(day, '10:00'), end: toISO(day, '11:00') }];
+  const slots = halfHourSlots('r1', day, others, null, new Date(`${day}T09:10`));
+  const at = (time) => slots.find((s) => s.time === time).available;
+  assert.equal(slots.length, 28);
+  assert.equal(at('09:00'), false);   // already started
+  assert.equal(at('09:30'), true);
+  assert.equal(at('10:00'), false);   // taken
+  assert.equal(at('10:30'), false);
+  assert.equal(at('11:00'), true);
+  assert.equal(halfHourSlots('r1', day, others, 'x', new Date(`${day}T09:10`)).find((s) => s.time === '10:00').available, true);
+});

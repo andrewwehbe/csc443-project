@@ -4,6 +4,7 @@ const kinds = {
   primary: 'bg-brand-800 text-paper hover:bg-brand-900 focus-visible:outline-brand-800',
   secondary: 'border border-ink/20 bg-surface text-ink hover:bg-brand-50',
   quiet: 'text-muted hover:bg-brand-50 hover:text-ink',
+  danger: 'bg-red-700 text-white hover:bg-red-800 focus-visible:outline-red-700',   // only to confirm something destructive
 };
 
 export function buttonClass(kind, size = 'normal') {

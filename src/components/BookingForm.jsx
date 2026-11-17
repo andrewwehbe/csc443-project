@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { checkHouseRules } from '../lib/bookingRules.js';
-import { formToDraft, nearestFreeSlot, validateForm } from '../lib/bookingForm.js';
+import { formToDraft, halfHourSlots, nearestFreeSlot, validateForm } from '../lib/bookingForm.js';
 import { whenPhrase } from '../lib/roomDetail.js';
 import { formatDate, formatTime } from '../lib/time.js';
 import { buttonClass } from '../lib/buttons.js';
 import { useUnsavedChangesWarning } from '../hooks/useUnsavedChangesWarning.js';
+import ConfirmDialog from './ConfirmDialog.jsx';
 import DayTimeline from './DayTimeline.jsx';
+import TimeSlotPicker from './TimeSlotPicker.jsx';
 import Field from './Field.jsx';
 
 const inputClass =
@@ -33,7 +35,7 @@ export default function BookingForm({ rooms, bookings, currentUser, initialForm,
   const sameDay = bookingFor('one-per-day');
   const freeSlot = clash && nearestFreeSlot(draft, bookings);
   const blocked = Object.keys(errors).length > 0 || problems.length > 0;
-  useUnsavedChangesWarning(JSON.stringify(form) !== JSON.stringify(initialForm));
+  const leaving = useUnsavedChangesWarning(JSON.stringify(form) !== JSON.stringify(initialForm));
 
   // An error shows once its field has been changed, or after a submit attempt. Two house rules belong to
   // one field and show there at once: out of service on Room, the 2-hour limit on To.
@@ -50,6 +52,17 @@ export default function BookingForm({ rooms, bookings, currentUser, initialForm,
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
     setTouched({ ...touched, [name]: true });
+    setSaveError('');
+  }
+
+  // A tap on the time picker sets From, and To follows: the same length as before (if it was a valid one,
+  // two hours at most), else one hour, never past 22:00.
+  function pickStart(time) {
+    const minutes = (t) => Number(t.slice(0, 2)) * 60 + Number(t.slice(3));
+    const length = form.start && form.end && minutes(form.end) > minutes(form.start) ? Math.min(minutes(form.end) - minutes(form.start), 120) : 60;
+    const end = Math.min(minutes(time) + length, 22 * 60);
+    setForm({ ...form, start: time, end: `${String(Math.floor(end / 60)).padStart(2, '0')}:${String(end % 60).padStart(2, '0')}` });
+    setTouched({ ...touched, start: true, end: true });
     setSaveError('');
   }
 
@@ -87,6 +100,12 @@ export default function BookingForm({ rooms, bookings, currentUser, initialForm,
           </select>
         </Field>
         <Field label="Date" name="date" error={errorFor('date')}><input type="date" {...fieldProps('date')} /></Field>
+        {room && form.date && (
+          <div className="sm:col-span-2">
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">Free start times on {room.name}</p>
+            <TimeSlotPicker slots={halfHourSlots(room.id, form.date, bookings, bookingId)} value={form.start} onPick={pickStart} />
+          </div>
+        )}
         <Field label="From" name="start" error={errorFor('start')}><input type="time" {...fieldProps('start')} /></Field>
         <Field label="To" name="end" error={errorFor('end')} hint="Two hours maximum."><input type="time" {...fieldProps('end')} /></Field>
       </div>
@@ -137,6 +156,9 @@ export default function BookingForm({ rooms, bookings, currentUser, initialForm,
         <span className="flex-1" />
         {blocked && (clash || submitted) && <span className="text-xs font-medium text-red-700">{clash ? 'Resolve the clash to continue' : 'Fix what is marked to continue'}</span>}
       </div>
+
+      <ConfirmDialog open={leaving.state === 'blocked'} title="Leave without saving?" message="The changes you made to this booking will be lost."
+        confirmLabel="Leave" cancelLabel="Stay" onConfirm={() => leaving.proceed()} onCancel={() => leaving.reset()} />
     </form>
   );
 }

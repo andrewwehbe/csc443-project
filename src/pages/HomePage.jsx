@@ -133,8 +133,9 @@ function RoomRow({ room, bookings, today, now, currentUser }) {
         <span className="flex-1" />
         {status && <span className={statusChipClass(status.tone)}>{status.word}</span>}
       </div>
-      <div className="mt-3">
-        <DayTimeline bookings={roomBookings} date={today} currentUser={currentUser} />
+      {/* relative z-10: above the card's link, so a click on free time opens the booking popover */}
+      <div className="relative z-10 mt-3">
+        <DayTimeline bookings={roomBookings} date={today} currentUser={currentUser} bookRoomId={room.id} />
       </div>
       {nothingBooked && <p className="mt-1.5 text-xs text-muted">Nothing booked today.</p>}
     </li>

@@ -3,7 +3,7 @@ import { makeSeedBookings } from '../data/bookings.js';
 import { checkHouseRules } from '../lib/bookingRules.js';
 import { isOwner } from '../lib/ownership.js';
 
-// Every booking lives here, in React state, and every change goes through these three functions.
+// Every booking lives here, in React state, and every change goes through these four functions.
 // They play the part the API plays in Phase 2: they check who is asking and enforce the house rules,
 // so no screen can skip a rule. Reloading the page resets the bookings to the seed data (expected in Phase 1).
 //
@@ -50,5 +50,20 @@ export function useBookings(currentUser) {
     return { ok: true, booking };
   }
 
-  return { bookings, addBooking, updateBooking, cancelBooking };
+  // Undo for a cancel: the booking is confirmed again, if the house rules still allow it (someone may have
+  // taken the slot in the meantime, or it may already be your booking for that day).
+  function restoreBooking(id) {
+    const existing = bookings.find((b) => b.id === id);
+    if (!existing || existing.status !== 'cancelled') return { ok: false, problems: [{ rule: 'not-found', message: 'There is nothing to undo.' }] };
+    if (!isOwner(existing, currentUser)) {
+      return { ok: false, problems: [{ rule: 'not-owner', message: 'You can only restore your own bookings.' }] };
+    }
+    const booking = { ...existing, status: 'confirmed' };
+    const problems = checkHouseRules(booking, bookings);
+    if (problems.length > 0) return { ok: false, problems };
+    setBookings((current) => current.map((b) => (b.id === id ? booking : b)));
+    return { ok: true, booking };
+  }
+
+  return { bookings, addBooking, updateBooking, cancelBooking, restoreBooking };
 }

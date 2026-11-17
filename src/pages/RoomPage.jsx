@@ -112,6 +112,7 @@ export default function RoomPage({ rooms, bookings, currentUser, simulation, can
                     hours={false}
                     legend={i === days.length - 1}
                     label={`${data.name} · ${dayLabel(day)}`}
+                    bookRoomId={data.status === 'out-of-service' ? undefined : data.id}
                   />
                 </div>
               </div>

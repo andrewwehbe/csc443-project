@@ -62,3 +62,19 @@ export function nearestFreeSlot(draft, bookings, now = new Date()) {
   }
   return best && { start: timeKey(best.start), end: timeKey(best.end) };
 }
+
+// For the time picker: every half hour from 08:00 to 21:30 on the chosen room and day, and whether a booking
+// could start there: free for at least half an hour (the booking being edited does not count) and not past.
+//   [{ time: '14:00', available: true }, { time: '14:30', available: false }, ...]
+export function halfHourSlots(roomId, date, bookings, bookingId = null, now = new Date()) {
+  const taken = bookings.filter((b) => b.roomId === roomId && b.id !== bookingId && b.status === 'confirmed' && dateKey(b.start) === date);
+  const slots = [];
+  for (let minute = 8 * 60; minute < 22 * 60; minute += 30) {
+    const time = `${String(Math.floor(minute / 60)).padStart(2, '0')}:${String(minute % 60).padStart(2, '0')}`;
+    const start = new Date(`${date}T${time}`);
+    const end = new Date(+start + 30 * 60000);
+    const busy = taken.some((b) => new Date(b.start) < end && start < new Date(b.end));
+    slots.push({ time, available: !busy && start > now });
+  }
+  return slots;
+}
