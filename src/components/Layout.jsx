@@ -1,6 +1,9 @@
 import { Link, Outlet, useLocation } from 'react-router';
+import { CalendarPlus } from 'lucide-react';
 import { buttonClass } from '../lib/buttons.js';
 import DemoBar from './DemoBar.jsx';
+import Icon from './Icon.jsx';
+import Logo, { LogoMark } from './Logo.jsx';
 
 const links = [
   { to: '/availability', label: 'Availability' },
@@ -38,8 +41,8 @@ export default function Layout({ users, currentUser, onUserChange, simulation, o
 
       <header className="border-b border-ink/15 bg-paper">
         <div className="mx-auto flex max-w-6xl items-end gap-7 px-4 pb-3 pt-4">
-          <Link to="/" className="flex items-baseline gap-2.5">
-            <span className="font-display text-2xl font-semibold tracking-tight text-ink">Ghurfa</span>
+          <Link to="/" className="flex items-center gap-3" aria-label="Ghurfa, home">
+            <Logo />
             <span className="hidden text-[11px] font-semibold uppercase tracking-[0.14em] text-muted sm:inline">Two hours, yours</span>
           </Link>
           <nav className="hidden gap-6 md:flex" aria-label="Main">
@@ -56,7 +59,7 @@ export default function Layout({ users, currentUser, onUserChange, simulation, o
           </nav>
           <span className="flex-1" />
           {/* The wrapper hides it: on the button itself, inline-flex would win over hidden. */}
-          <span className="hidden sm:block"><Link to="/bookings/new" className={buttonClass('primary', 'small')}>Book a room</Link></span>
+          <span className="hidden sm:block"><Link to="/bookings/new" className={buttonClass('primary', 'small')}><Icon icon={CalendarPlus} size="sm" />Book a room</Link></span>
           {currentUser ? (
             <span title={currentUser.name} className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-brand-800 font-display text-[11px] font-semibold text-paper">
               <span aria-hidden="true">{initials(currentUser.name)}</span>
@@ -73,8 +76,9 @@ export default function Layout({ users, currentUser, onUserChange, simulation, o
       </main>
 
       {!fullBleed && (
-        <footer className="mx-auto mt-20 w-full max-w-6xl border-t border-line px-4 py-8 text-xs text-muted">
-          <span className="font-display font-bold tracking-wide">GHURFA</span> · CSC443 Web Programming · Fall 2026 · Team Not_vibeCoding
+        <footer className="mx-auto mt-20 flex w-full max-w-6xl items-center gap-2 border-t border-line px-4 py-8 text-xs text-muted">
+          <LogoMark className="h-4 w-4" />
+          <span><span className="font-display font-bold tracking-wide text-ink">GHURFA</span> · CSC443 Web Programming · Fall 2026 · Team Not_vibeCoding</span>
         </footer>
       )}
     </div>
