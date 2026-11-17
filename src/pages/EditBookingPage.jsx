@@ -35,7 +35,7 @@ export default function EditBookingPage({ rooms, users, bookings, currentUser, s
   } else {
     content = (
       <>
-        {savedAt && <p role="status" className="mb-6 max-w-3xl border-l-4 border-brand-700 bg-brand-50 p-4 text-sm font-semibold text-brand-900">Changes saved at {formatTime(savedAt)}.</p>}
+        {savedAt && <p role="status" className="mb-6 max-w-3xl rounded-lg border-l-4 border-brand-700 bg-brand-50 p-4 text-sm font-semibold text-brand-900">Changes saved at {formatTime(savedAt)}.</p>}
         <BookingForm key={savedAt} rooms={rooms} bookings={bookings} currentUser={currentUser} initialForm={bookingToForm(data)}
           bookingId={data.id} submitLabel="Save changes" onSave={(draft) => updateBooking(data.id, draft)}
           onSaved={() => setSavedAt(new Date().toISOString())} />

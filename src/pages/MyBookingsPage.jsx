@@ -54,7 +54,7 @@ export default function MyBookingsPage({ rooms, bookings, currentUser, simulatio
             const room = rooms.find((r) => r.id === booking.roomId);
             const { word, tone } = statusWord(booking, now);
             return (
-              <li key={booking.id} className="flex flex-wrap items-center gap-x-4 gap-y-3 border border-line bg-surface px-5 py-4">
+              <li key={booking.id} className="flex flex-wrap items-center gap-x-4 gap-y-3 rounded-xl border border-line bg-surface px-5 py-4">
                 <span className="min-w-0 flex-1">
                   <Link to={`/rooms/${room.id}`} className="block font-display text-lg font-semibold tracking-tight text-ink hover:underline">{room.name}</Link>
                   <span className="mt-0.5 block text-xs text-muted">{dayName(booking.start)} {formatTime(booking.start)} – {formatTime(booking.end)} · {booking.purpose}</span>
@@ -78,13 +78,13 @@ export default function MyBookingsPage({ rooms, bookings, currentUser, simulatio
       <h1 className="font-display text-4xl font-semibold tracking-tight text-ink">My bookings</h1>
       <nav className="mt-6 flex gap-8 border-b border-line" aria-label="My bookings">
         <Link to="/my-bookings" aria-current="page" className="border-b-2 border-accent-500 pb-2.5 font-display text-sm font-semibold text-ink">
-          Upcoming <span className="ml-1.5 border border-line px-1.5 font-mono text-[10px] tabular-nums">{upcoming.length}</span>
+          Upcoming <span className="ml-1.5 rounded border border-line px-1.5 font-mono text-[10px] tabular-nums">{upcoming.length}</span>
         </Link>
         <Link to="/my-bookings/history" className="border-b-2 border-transparent pb-2.5 font-display text-sm text-muted hover:text-ink">
-          History <span className="ml-1.5 border border-line px-1.5 font-mono text-[10px] tabular-nums">{mine.length - upcoming.length}</span>
+          History <span className="ml-1.5 rounded border border-line px-1.5 font-mono text-[10px] tabular-nums">{mine.length - upcoming.length}</span>
         </Link>
       </nav>
-      {message && <p role="status" className="mt-5 border-l-4 border-brand-700 bg-brand-50 p-4 text-sm font-semibold text-brand-900">{message}</p>}
+      {message && <p role="status" className="mt-5 rounded-lg border-l-4 border-brand-700 bg-brand-50 p-4 text-sm font-semibold text-brand-900">{message}</p>}
       <div className="mt-5">{content}</div>
     </section>
   );

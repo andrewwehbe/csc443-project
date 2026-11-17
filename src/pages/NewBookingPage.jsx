@@ -27,7 +27,7 @@ export default function NewBookingPage({ rooms, bookings, currentUser, simulatio
   } else if (created) {
     const room = data.find((r) => r.id === created.roomId);
     content = (
-      <div role="status" className="max-w-3xl border-l-4 border-brand-700 bg-brand-50 p-4 text-sm font-semibold text-brand-900">
+      <div role="status" className="max-w-3xl rounded-lg border-l-4 border-brand-700 bg-brand-50 p-4 text-sm font-semibold text-brand-900">
         Booked {room.name} for {formatDate(created.start)}, {formatTime(created.start)} to {formatTime(created.end)}.
         <p className="mt-3 flex flex-wrap gap-2">
           <Link to="/my-bookings" className={buttonClass('primary', 'small')}>See my bookings</Link>

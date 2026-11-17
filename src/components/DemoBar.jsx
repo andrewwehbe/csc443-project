@@ -1,3 +1,5 @@
+import { frame } from '../lib/frame.js';
+
 // Phase 1 only: there is no real sign-in or server yet, so this bar lets anyone (the professor included)
 // switch who is signed in and force a data state. Phase 2 replaces it with a real login and real requests.
 const MODES = [
@@ -15,7 +17,7 @@ export default function DemoBar({ users, currentUser, onUserChange, simulation, 
 
   return (
     <div className="bg-slate-900 text-slate-100">
-      <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-2 text-sm">
+      <div className={`${frame} flex flex-wrap items-center gap-x-6 gap-y-2 py-2 text-sm`}>
         <span className="font-medium text-slate-300">Phase 1 demo</span>
         <label className="flex items-center gap-2">
           Signed in as

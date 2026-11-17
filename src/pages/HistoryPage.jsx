@@ -87,6 +87,7 @@ export default function HistoryPage({ rooms, bookings, currentUser, simulation }
           .history-item.is-cancelled .history-day::after { border-color: var(--color-line); }
           .history-card {
             border: 1px solid var(--color-line);
+            border-radius: 0.75rem;
             background: var(--color-surface);
             padding: 0.9rem 1.15rem;
             transition: transform 0.2s ease, border-color 0.2s ease;
@@ -139,10 +140,10 @@ export default function HistoryPage({ rooms, bookings, currentUser, simulation }
       <h1 className="font-display text-4xl font-semibold tracking-tight text-ink">My bookings</h1>
       <nav className="mt-6 flex gap-8 border-b border-line" aria-label="My bookings">
         <Link to="/my-bookings" className="border-b-2 border-transparent pb-2.5 font-display text-sm text-muted hover:text-ink">
-          Upcoming <span className="ml-1.5 border border-line px-1.5 font-mono text-[10px] tabular-nums">{upcomingCount}</span>
+          Upcoming <span className="ml-1.5 rounded border border-line px-1.5 font-mono text-[10px] tabular-nums">{upcomingCount}</span>
         </Link>
         <Link to="/my-bookings/history" aria-current="page" className="border-b-2 border-accent-500 pb-2.5 font-display text-sm font-semibold text-ink">
-          History <span className="ml-1.5 border border-line px-1.5 font-mono text-[10px] tabular-nums">{past.length}</span>
+          History <span className="ml-1.5 rounded border border-line px-1.5 font-mono text-[10px] tabular-nums">{past.length}</span>
         </Link>
       </nav>
       <div className="mt-5">{content}</div>

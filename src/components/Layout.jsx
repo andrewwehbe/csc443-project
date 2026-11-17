@@ -1,6 +1,7 @@
 import { Link, Outlet, useLocation } from 'react-router';
 import { CalendarPlus } from 'lucide-react';
 import { buttonClass } from '../lib/buttons.js';
+import { frame } from '../lib/frame.js';
 import DemoBar from './DemoBar.jsx';
 import Icon from './Icon.jsx';
 import Logo, { LogoMark } from './Logo.jsx';
@@ -40,7 +41,7 @@ export default function Layout({ users, currentUser, onUserChange, simulation, o
       />
 
       <header className="border-b border-ink/15 bg-paper">
-        <div className="mx-auto flex max-w-6xl items-end gap-7 px-4 pb-3 pt-4">
+        <div className={`${frame} flex items-end gap-7 pb-3 pt-4`}>
           <Link to="/" className="flex items-center gap-3" aria-label="Ghurfa, home">
             <Logo />
             <span className="hidden text-[11px] font-semibold uppercase tracking-[0.14em] text-muted sm:inline">Two hours, yours</span>
@@ -71,12 +72,12 @@ export default function Layout({ users, currentUser, onUserChange, simulation, o
         </div>
       </header>
 
-      <main className={fullBleed ? 'flex w-full flex-1 flex-col' : 'mx-auto w-full max-w-6xl flex-1 px-4 py-10'}>
+      <main className={fullBleed ? 'flex w-full flex-1 flex-col' : `${frame} flex-1 py-10`}>
         <Outlet />
       </main>
 
       {!fullBleed && (
-        <footer className="mx-auto mt-20 flex w-full max-w-6xl items-center gap-2 border-t border-line px-4 py-8 text-xs text-muted">
+        <footer className={`${frame} mt-20 flex items-center gap-2 border-t border-line py-8 text-xs text-muted`}>
           <LogoMark className="h-4 w-4" />
           <span><span className="font-display font-bold tracking-wide text-ink">GHURFA</span> · CSC443 Web Programming · Fall 2026 · Team Not_vibeCoding</span>
         </footer>
