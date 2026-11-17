@@ -107,15 +107,20 @@ export default function DayTimeline({ bookings, date, currentUser, chosen = null
         </ul>
       </div>
 
-      {legend && (
-        <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-line pt-4 text-xs text-muted" aria-hidden="true">
-          <span className="flex items-center gap-2"><span className="h-3 w-7 rounded-[1px] border border-line bg-paper" />Free</span>
-          <span className="flex items-center gap-2"><span className="h-3 w-7 rounded-[1px] bg-brand-200" />Booked by someone else</span>
-          <span className="flex items-center gap-2"><span className="h-3 w-7 rounded-[1px] bg-brand-800" />Yours</span>
-          <span className="flex items-center gap-2"><span className="h-3 w-7 rounded-[1px] bg-accent-100 ring-2 ring-inset ring-accent-500" />Being chosen</span>
-          <span className="flex items-center gap-2"><span className="h-3 w-7 rounded-[1px] bg-red-100 ring-2 ring-inset ring-red-600" />Clashes</span>
-        </div>
-      )}
+      {legend && <TimelineLegend />}
+    </div>
+  );
+}
+
+// The colour key. A screen with one bar per room puts it once under the list: <TimelineLegend />.
+export function TimelineLegend() {
+  return (
+    <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-line pt-4 text-xs text-muted" aria-hidden="true">
+      <span className="flex items-center gap-2"><span className="h-3 w-7 rounded-[1px] border border-line bg-paper" />Free</span>
+      <span className="flex items-center gap-2"><span className="h-3 w-7 rounded-[1px] bg-brand-200" />Booked by someone else</span>
+      <span className="flex items-center gap-2"><span className="h-3 w-7 rounded-[1px] bg-brand-800" />Yours</span>
+      <span className="flex items-center gap-2"><span className="h-3 w-7 rounded-[1px] bg-accent-100 ring-2 ring-inset ring-accent-500" />Being chosen</span>
+      <span className="flex items-center gap-2"><span className="h-3 w-7 rounded-[1px] bg-red-100 ring-2 ring-inset ring-red-600" />Clashes</span>
     </div>
   );
 }
