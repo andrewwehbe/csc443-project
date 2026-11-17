@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
+import { bySize } from '../data/rooms.js';
 import { checkHouseRules } from '../lib/bookingRules.js';
 import { formToDraft, halfHourSlots, nearestFreeSlot, validateForm } from '../lib/bookingForm.js';
 import { whenPhrase } from '../lib/roomDetail.js';
@@ -92,7 +93,7 @@ export default function BookingForm({ rooms, bookings, currentUser, initialForm,
         <Field label="Room" name="roomId" error={errorFor('roomId')}>
           <select {...fieldProps('roomId')}>
             <option value="">Choose a room</option>
-            {rooms.map((r) => (
+            {rooms.toSorted(bySize).map((r) => (
               <option key={r.id} value={r.id} disabled={r.status === 'out-of-service'}>
                 {r.name} · {r.status === 'out-of-service' ? 'out of service' : `seats ${r.capacity}`}
               </option>

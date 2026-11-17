@@ -1,3 +1,4 @@
+import { bySize } from '../data/rooms.js';
 import { isOwner } from './ownership.js';
 import { dateKey } from './time.js';
 import { DAY_END, DAY_START, minuteOfDay } from './timeline.js';
@@ -55,7 +56,7 @@ export function roomsToShow(rooms, bookings, span, currentUser, now = new Date()
   const window = todayWindow(span, now);
   if (!window) return [];
   const today = dateKey(now);
-  return rooms.filter((room) => hasRoomFor(room, bookings, window, currentUser, today));
+  return rooms.filter((room) => hasRoomFor(room, bookings, window, currentUser, today)).toSorted(bySize);
 }
 
 // The page's big line in two parts, for the line break the pack puts in it:

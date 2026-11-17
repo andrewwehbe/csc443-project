@@ -40,7 +40,7 @@ test('a floor turns back into the same address', () => {
 test('a floor lists its own rooms, the one out of service included', () => {
   const floor = readFloor(params('building=main&floor=2'), rooms);
   assert.deepEqual(roomsOnFloor(rooms, floor).map((r) => r.id), ['r4', 'r5', 'r6']);
-  assert.deepEqual(roomsOnFloor(rooms, readFloor(params('building=engineering&floor=1'), rooms)).map((r) => r.id), ['r9', 'r10', 'r11']);
+  assert.deepEqual(roomsOnFloor(rooms, readFloor(params('building=engineering&floor=1'), rooms)).map((r) => r.id), ['r9', 'r11', 'r10']);
 });
 
 test('the floor title and room count read as words', () => {

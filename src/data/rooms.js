@@ -20,6 +20,13 @@ export const rooms = [
   { id: 'r12', name: 'Project Lab E7', building: 'Engineering Library', floor: 2, capacity: 10, amenities: ['whiteboard', 'screen', 'power'], status: 'open', photo: 'rooms/r12.svg' },
 ];
 
+// Lists show rooms by size, smallest first, so you scan down to the size you need.
+// Same size: by name, with numbers in number order (Room 9 before Room 10).
+//   rooms.toSorted(bySize)
+export function bySize(a, b) {
+  return a.capacity - b.capacity || a.name.localeCompare(b.name, 'en', { numeric: true });
+}
+
 export function findRoom(id) {
   return rooms.find((room) => room.id === id) ?? null;
 }

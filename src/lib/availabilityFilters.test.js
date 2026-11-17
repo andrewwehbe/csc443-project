@@ -72,6 +72,16 @@ test('capacity is a minimum unless exact, and a room needs every ticked amenity'
   assert.deepEqual(ids(8, ['whiteboard']), []);
 });
 
+test('rooms come back by size, smallest first, then by name in number order', () => {
+  const rooms = [
+    { id: 'big', name: 'Room 1', capacity: 8, amenities: [] },
+    { id: 'ten', name: 'Room 10', capacity: 4, amenities: [] },
+    { id: 'nine', name: 'Room 9', capacity: 4, amenities: [] },
+    { id: 'small', name: 'Room 50', capacity: 2, amenities: [] },
+  ];
+  assert.deepEqual(filterRooms(rooms, noFilters).map((room) => room.id), ['small', 'nine', 'ten', 'big']);
+});
+
 test('days move across month and year ends', () => {
   assert.equal(shiftDay('2026-11-30', 1), '2026-12-01');
   assert.equal(shiftDay('2026-12-31', 1), '2027-01-01');
