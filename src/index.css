@@ -70,3 +70,15 @@
   font-display: swap;
   src: url('./assets/fonts/ibm-plex-sans-600.woff2') format('woff2');
 }
+
+/* UndoToast's countdown ring: it empties over --seconds, and pauses while the message is hovered or focused. */
+@keyframes undo-drain {
+  to { stroke-dashoffset: var(--ring); }
+}
+.undo-ring {
+  animation: undo-drain var(--seconds) linear forwards;
+}
+.undo-toast:hover .undo-ring,
+.undo-toast:focus-within .undo-ring {
+  animation-play-state: paused;
+}
