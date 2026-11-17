@@ -6,6 +6,7 @@ import { formToDraft, halfHourSlots, nearestFreeSlot, validateForm } from '../li
 import { whenPhrase } from '../lib/roomDetail.js';
 import { formatDate, formatTime } from '../lib/time.js';
 import { clock } from '../lib/quickBook.js';
+import { shake } from '../lib/motion.js';
 import { buttonClass } from '../lib/buttons.js';
 import { useUnsavedChangesWarning } from '../hooks/useUnsavedChangesWarning.js';
 import ConfirmDialog from './ConfirmDialog.jsx';
@@ -88,7 +89,11 @@ export default function BookingForm({ rooms, bookings, currentUser, initialForm,
     e.preventDefault();
     setSubmitted(true);
     const firstError = Object.keys(errors)[0];
-    if (firstError) document.getElementById(firstError).focus();
+    if (firstError) {
+      const field = document.getElementById(firstError);
+      field.focus();
+      shake(field);   // the eye goes where the cursor went
+    }
     if (blocked) return;   // the fields and the panels already say what is wrong
     const result = onSave(formToDraft(form));
     if (result.ok) onSaved(result.booking);

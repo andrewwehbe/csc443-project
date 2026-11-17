@@ -187,7 +187,7 @@ function BookOffer({ offer, href, onClose }) {
   }, [onClose]);
 
   return (
-    <div ref={boxRef} role="dialog" aria-label="Book this time" className="absolute z-20 mt-2 w-60 -translate-x-1/2 rounded-xl border border-line bg-surface p-4 text-sm ring-1 ring-ink/5"
+    <div ref={boxRef} role="dialog" aria-label="Book this time" className="pop-in absolute z-20 mt-2 w-60 origin-top -translate-x-1/2 rounded-xl border border-line bg-surface p-4 text-sm ring-1 ring-ink/5"
       style={{ left: `${Math.min(Math.max(offer.left, 14), 86)}%` }}>
       <p className="text-xs text-muted">Free {clock(offer.from)} to {clock(offer.to)}</p>
       <div className="mt-3 flex items-center gap-2">

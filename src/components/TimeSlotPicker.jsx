@@ -28,11 +28,13 @@ export default function TimeSlotPicker({ slots, value, onPick }) {
     <div role="radiogroup" aria-label="Free start times" className="grid grid-cols-4 gap-2 sm:grid-cols-7">
       {slots.map((slot, i) => {
         const checked = slot.time === value;
+        // h-11 on phones: a 44px target for a thumb. No transition: the arrow keys move the choice, and a
+        // highlight that glides falls behind the keys.
         return (
           <button key={slot.time} ref={(el) => { buttons.current[i] = el; }} type="button" role="radio" aria-checked={checked}
             disabled={!slot.available} tabIndex={i === focusStop ? 0 : -1}
             onClick={() => onPick(slot.time)} onKeyDown={(e) => handleKey(e, i)}
-            className={`h-9 rounded-lg border font-mono text-xs tabular-nums transition ${checked
+            className={`h-11 rounded-lg border font-mono text-xs tabular-nums sm:h-9 ${checked
               ? 'border-brand-800 bg-brand-800 font-semibold text-paper'
               : 'border-line bg-surface text-ink hover:border-brand-400'} disabled:cursor-not-allowed disabled:border-transparent disabled:bg-paper disabled:text-muted/50 disabled:line-through`}>
             {slot.time}
