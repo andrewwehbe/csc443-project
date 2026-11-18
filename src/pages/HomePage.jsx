@@ -8,16 +8,10 @@ import { dateKey } from '../lib/time.js';
 import { buttonClass } from '../lib/buttons.js';
 import { CalendarPlus } from 'lucide-react';
 import Icon from '../components/Icon.jsx';
-import RoomFinder from '../components/RoomFinder.jsx';
-import LoadingState from '../components/states/LoadingState.jsx';
-import EmptyState from '../components/states/EmptyState.jsx';
-import ErrorState from '../components/states/ErrorState.jsx';
 
 // Surface: 01 Today, at / (design pack 01-today.html). Owner: Njteh Balian.
-// What is free right now, a calendar of the week to find a room by time (RoomFinder), and the house rules.
-// It is also the example of the pattern every data screen follows: get the data, pass it through
-// useSimulatedRequest, then render one of the four states (loading, error, empty, the data).
-// The calendar's pick lives in the address (/?day=…&at=…&for=…), so Back and a reload keep it.
+// How many rooms are free right now, the way in to booking, and the house rules.
+// Booking itself happens at /explore (day, time, room).
 
 const RULES = [
   { figure: `${MAX_MINUTES / 60}h`, title: 'Maximum per booking', text: 'Long enough for a working session, short enough that rooms turn over.' },
@@ -35,27 +29,14 @@ function useNow() {
   return now;
 }
 
-export default function HomePage({ rooms, bookings, currentUser, simulation }) {
+export default function HomePage({ rooms, bookings, simulation }) {
   const now = useNow();
   const today = dateKey(now);
-  const { status, data, retry } = useSimulatedRequest(rooms, simulation);
+  const { status, data } = useSimulatedRequest(rooms, simulation);
 
   // Until the rooms arrive the heading asks the question; once they do, it answers it.
   const [lead, rest] =
     status === 'ready' ? headline(data.filter((room) => isFreeNow(room, bookings, now)).length, now) : ['Which rooms are free', 'right now?'];
-
-  let content;
-  if (status === 'loading') {
-    content = <LoadingState label="Loading today's rooms" />;
-  } else if (status === 'error') {
-    content = (
-      <ErrorState title="Today’s bookings would not load" message="The server did not answer. This usually passes in a moment." onRetry={retry} />
-    );
-  } else if (status === 'empty') {
-    content = <EmptyState title="No rooms to show" message="The library has not listed any study rooms yet." />;
-  } else {
-    content = <RoomFinder rooms={data} bookings={bookings} currentUser={currentUser} today={today} now={now} />;
-  }
 
   return (
     <div>
@@ -70,14 +51,8 @@ export default function HomePage({ rooms, bookings, currentUser, simulation }) {
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
           {/* Booking is what people come for, so it is the page's one primary (the header hides its own here). */}
-          <Link to="/bookings/new" className={buttonClass('primary')}><Icon icon={CalendarPlus} size="sm" />Book a room</Link>
-          <a href="#when" className={buttonClass('secondary')}>Pick a time</a>
+          <Link to="/explore" className={buttonClass('primary')}><Icon icon={CalendarPlus} size="sm" />Book a room</Link>
         </div>
-      </section>
-
-      <section id="when" className="mt-12 scroll-mt-6">
-        <h2 className="font-display text-2xl font-semibold tracking-tight text-ink">When do you need a room?</h2>
-        <div className="mt-4">{content}</div>
       </section>
 
       <section className="mt-14 grid gap-6 sm:grid-cols-3">

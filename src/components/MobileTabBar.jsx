@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router';
-import { CalendarCheck, CalendarPlus, DoorOpen, House, Search } from 'lucide-react';
+import { CalendarCheck, CalendarPlus, House } from 'lucide-react';
 import Icon from './Icon.jsx';
 
 // Phones only (below md, where the header hides its links): a bar fixed to the bottom of the screen with the
@@ -8,16 +8,14 @@ import Icon from './Icon.jsx';
 // it moves between pages, so it is navigation, not tabs.
 const TABS = [
   { to: '/', label: 'Today', icon: House, active: (path) => path === '/' },
-  { to: '/availability', label: 'Availability', icon: Search, active: (path) => path.startsWith('/availability') },
-  { to: '/rooms', label: 'Rooms', icon: DoorOpen, active: (path) => path.startsWith('/rooms') },
-  { to: '/bookings/new', label: 'Book', icon: CalendarPlus, active: (path) => path.startsWith('/bookings') },
+  { to: '/explore', label: 'Book a room', icon: CalendarPlus, active: (path) => path === '/explore' || path.startsWith('/rooms') },
   { to: '/my-bookings', label: 'My bookings', icon: CalendarCheck, active: (path) => path.startsWith('/my-bookings') },
 ];
 
 export default function MobileTabBar() {
   const { pathname } = useLocation();
   return (
-    <nav aria-label="Main" className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t border-line bg-surface pb-[env(safe-area-inset-bottom)] md:hidden">
+    <nav aria-label="Main" className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-3 border-t border-line bg-surface pb-[env(safe-area-inset-bottom)] md:hidden">
       {TABS.map(({ to, label, icon, active }) => {
         const on = active(pathname);
         return (

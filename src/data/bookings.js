@@ -1,6 +1,9 @@
 import { atTime } from '../lib/time.js';
+import { overlaps } from '../lib/bookingRules.js';
+import { rooms } from './rooms.js';
+import { otherStudents } from './users.js';
 
-// Seed bookings: the main entity, 48 records. Days are counted from today (0 = today, -1 = yesterday,
+// Seed bookings: the main entity. 48 written by hand below, plus a generated busy week (busyWeek). Days are counted from today (0 = today, -1 = yesterday,
 // 2 = the day after tomorrow), so the timeline always has something on it whenever the app is opened.
 // Every row obeys the house rules; src/lib/bookingRules.test.js checks that.
 //   [id, roomId, userId, day, start, end, attendees, status, purpose]
@@ -55,8 +58,41 @@ const rows = [
   ['b48', 'r8', 'u4', 6, '12:00', '14:00', 6, 'confirmed', 'Organic chemistry group study'],
 ];
 
+// A busy week on top of the rows above: the other students (users.js) book every open room for the next
+// seven days, about half of each day, so any time you pick shows some rooms free and some taken.
+// It looks random but is the same on every load: the numbers come from a fixed seed (Park–Miller).
+// Every booking obeys the house rules: at most two hours, no overlap with anything already there, and the
+// students take turns, so nobody holds two bookings on one day.
+const PURPOSES = ['Group study', 'Project meeting', 'Exam revision', 'Lab report write-up', 'Presentation practice', 'Reading group', 'Thesis work'];
+const hhmm = (minute) => `${String(Math.floor(minute / 60)).padStart(2, '0')}:${String(minute % 60).padStart(2, '0')}`;
+
+function busyWeek(today, existing) {
+  let seed = 443;
+  const random = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+  const pick = (list) => list[Math.floor(random() * list.length)];
+  const made = [];
+  for (let day = 0; day <= 6; day += 1) {
+    let turn = 0;   // which student books next; restarts every day
+    for (const room of rooms.filter((r) => r.status === 'open')) {
+      let minute = 8 * 60 + pick([0, 30, 60, 90]);
+      while (minute + 60 <= 22 * 60) {
+        const length = Math.min(pick([60, 90, 120]), 22 * 60 - minute);
+        const booking = {
+          id: `g${made.length + 1}`, roomId: room.id, userId: otherStudents[turn].id,
+          start: atTime(day, hhmm(minute), today), end: atTime(day, hhmm(minute + length), today),
+          purpose: pick(PURPOSES), attendees: 1 + Math.floor(random() * room.capacity), status: 'confirmed',
+        };
+        const clashes = [...existing, ...made].some((b) => b.roomId === room.id && b.status !== 'cancelled' && overlaps(b, booking));
+        if (!clashes) { made.push(booking); turn += 1; }
+        minute += length + pick([30, 60, 90, 120, 150]);
+      }
+    }
+  }
+  return made;
+}
+
 export function makeSeedBookings(today = new Date()) {
-  return rows.map(([id, roomId, userId, day, start, end, attendees, status, purpose]) => ({
+  const handmade = rows.map(([id, roomId, userId, day, start, end, attendees, status, purpose]) => ({
     id,
     roomId,
     userId,
@@ -66,4 +102,5 @@ export function makeSeedBookings(today = new Date()) {
     attendees,
     status,
   }));
+  return [...handmade, ...busyWeek(today, handmade)];
 }

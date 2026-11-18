@@ -42,7 +42,7 @@ These are the minimum fields from the topic spec. Fields we add are listed here 
 2. it is longer than two hours;
 3. the user already holds a confirmed future booking on that day (one per user per day).
 
-The booking form warns about a conflict before the user submits, not only after. An availability view shows every room on a chosen day as a timeline of booked and free blocks.
+Booking is one flow at `/explore`: pick days, then hours on a clock, then a room in the library, where only rooms free then stay lit. Confirm checks the house rules before it saves. A room's page shows its day as a timeline of booked and free blocks.
 
 ## Design
 
@@ -72,12 +72,12 @@ Each member owns two surfaces (a surface is a screen with its own route). We fol
 
 | Member | Surfaces (routes) | Files |
 | --- | --- | --- |
-| Njteh Balian | 01 Today (`/`), 02 Availability (`/availability`) | `src/pages/HomePage.jsx`, `src/lib/today.js` and its test, `src/pages/AvailabilityPage.jsx`, `src/lib/availabilityFilters.js` and its test |
-| Elio El Koussa | 03 Room detail (`/rooms/:roomId`), 04 The floor (`/rooms`) | `src/pages/RoomPage.jsx`, `src/lib/roomDetail.js` and its test, `src/pages/FloorPage.jsx`, `src/lib/floor.js` and its test. Also the shared day timeline and room status words (see Shared code) |
-| Andrew Wehbe | 05 Book a room (`/bookings/new`, and `/bookings/:bookingId/edit` to change a saved booking), 06 My bookings (`/my-bookings`) | `src/pages/NewBookingPage.jsx`, `src/pages/EditBookingPage.jsx`, `src/pages/MyBookingsPage.jsx`, `src/components/BookingForm.jsx`, `src/components/Field.jsx`, `src/lib/bookingForm.js` and its test, `src/lib/buttons.js`, `src/components/Logo.jsx`, `src/components/Icon.jsx`, `src/components/ConfirmDialog.jsx`, `src/components/UndoToast.jsx`, `src/components/MobileTabBar.jsx`, `src/components/AccountMenu.jsx`, `src/components/RoomFinder.jsx`, `src/lib/findTime.js` and its test, `src/lib/motion.js`, `src/components/TimeSlotPicker.jsx`, `src/hooks/useUnsavedChangesWarning.js` |
+| Njteh Balian | 01 Today (`/`) | `src/pages/HomePage.jsx`, `src/lib/today.js` and its test, `src/lib/availabilityFilters.js` and its test |
+| Elio El Koussa | 03 Room detail (`/rooms/:roomId`) | `src/pages/RoomPage.jsx`, `src/lib/roomDetail.js` and its test. Also the shared day timeline and room status words (see Shared code) |
+| Andrew Wehbe | 05 Book a room (`/explore`, and `/bookings/:bookingId/edit` to change a saved booking), 06 My bookings (`/my-bookings`) | `src/pages/ExplorePage.jsx` and its pictures in `public/explore/`, `src/pages/EditBookingPage.jsx`, `src/pages/MyBookingsPage.jsx`, `src/components/BookingForm.jsx`, `src/components/Field.jsx`, `src/lib/bookingForm.js` and its test, `src/lib/buttons.js`, `src/components/Logo.jsx`, `src/components/Icon.jsx`, `src/components/ConfirmDialog.jsx`, `src/components/UndoToast.jsx`, `src/components/MobileTabBar.jsx`, `src/components/AccountMenu.jsx`, `src/lib/findTime.js` and its test, `src/lib/motion.js`, `src/components/TimeSlotPicker.jsx`, `src/hooks/useUnsavedChangesWarning.js` |
 | Marc Hebbo | 07 History (`/my-bookings/history`), 08 Sign in and register (`/sign-in`, `/register`) | to come |
 
-Shared files: `src/main.jsx` (router), `src/App.jsx` (routes), `src/components/Layout.jsx` (the Ghurfa header and footer around every screen; as in the pack, Today and Book a room light the Availability link, History lights My bookings, and below `md` the links hide). Andrew also wrote the shared code listed below.
+Shared files: `src/main.jsx` (router), `src/App.jsx` (routes), `src/components/Layout.jsx` (the Ghurfa header and footer around every screen; Book a room lights its own link, History lights My bookings, and below `md` the links hide). Andrew also wrote the shared code listed below.
 
 ### Routes
 
@@ -86,16 +86,14 @@ Use these paths so the screens can link to each other (a booking links to its ro
 | Path | Surface (design pack file) | Owner |
 | --- | --- | --- |
 | `/` | 01 Today: what is free now, and the three rules (`01-today.html`) | Njteh |
-| `/availability` | 02 Availability: every room across a day (`02-availability.html`) | Njteh |
 | `/rooms/:roomId` | 03 Room detail: one room and its week (`03-room.html`) | Elio |
-| `/rooms` | 04 The floor: every room, including the one out of service (`04-building.html`) | Elio |
-| `/bookings/new` | 05 Book a room (`05-book.html`) | Andrew |
+| `/explore` | 05 Book a room: day, then time, then a room in the library | Andrew |
 | `/bookings/:bookingId/edit` | 05 Book a room, changing a saved booking | Andrew |
 | `/my-bookings` | 06 My bookings, the Upcoming tab (`06-bookings.html`) | Andrew |
 | `/my-bookings/history` | 07 History, the History tab of My bookings (`07-history.html`) | Marc |
 | `/sign-in`, `/register` | 08 Sign in and register (`08-auth.html`) | Marc |
 
-**Opening the booking form already filled in.** Add any of `room`, `date`, `start` and `end` to the address, for example `/bookings/new?room=r3&date=2026-11-12&start=14:00&end=15:30`. Use this for "Book this room" on a room page and for a free slot on the availability timeline. A value that does not fit shows up as an error in the form.
+**Opening the booking steps already filled in.** The picks live in the address: `/explore?days=2026-11-19,2026-11-20&hours=10,11&view=library` (days within the next week, hours 8 to 21; `view` is `day`, `time` or `library`). A free slot clicked on a room's timeline opens it this way. The old addresses `/availability`, `/rooms` and `/bookings/new` lead to `/explore`.
 
 **Change links.** An owner's Change button (as on My bookings and Room detail) goes to `/bookings/<id>/edit`. That page asks `isOwner` itself, so another student or someone signed out who opens the link sees a message instead of the form.
 
@@ -128,12 +126,11 @@ Everything below is used by several surfaces. Change it only after telling the t
 | Logo (Andrew) | `src/components/Logo.jsx`, `public/favicon.svg` | `<Logo />` is the mark plus the word "ghurfa", as in the header; `<LogoMark className="h-16 w-16" />` is the mark alone. Add `onDark` on a navy background. The browser tab icon is the same mark. |
 | Confirm dialog (Andrew) | `src/components/ConfirmDialog.jsx` | `<ConfirmDialog open={asking} title="Leave without saving?" message="…" confirmLabel="Leave" cancelLabel="Stay" onConfirm={…} onCancel={…} />`. Only for what cannot be undone: cancelling a booking does not ask, it offers Undo. Built on the browser's `<dialog>`: keyboard stays inside, Escape and a backdrop click cancel, the safe choice has focus first. Used for Cancel on My bookings and for leaving the booking form with unsaved changes. Adapted from 21st.dev/@ddoemonn/modal. |
 | Undo after a cancel (Andrew) | `src/components/UndoToast.jsx`, `cancelWithUndo` in `src/App.jsx`, `restoreBooking` in `src/hooks/useBookings.js` | Every screen's `cancelBooking` prop is App's `cancelWithUndo`, so any cancel shows "Cancelled …  Undo" for 6 seconds (the ring pauses while hovered). Undo calls `restoreBooking`, which re-checks the house rules. Adapted from 21st.dev/@arihantcodes/undo-pill. |
-| Room finder (Andrew) | `src/components/RoomFinder.jsx`, logic in `src/lib/findTime.js` | Today's calendar: seven days across, start times down, each slot counting the rooms open for 1 h, 1 h 30 or 2 h. A picked slot lists those rooms with Book (the form opens filled in). The pick lives in the address: `/?day=2026-11-19&at=09:00&for=90`. Warns when you already have an upcoming booking that day. |
+| Free rooms by time (Andrew) | `src/lib/findTime.js` | `openRooms(rooms, bookings, day, start, length, now)`: the rooms free for that stretch; `nextDays(today)`: the bookable week; `hasBegun`: whether a time has passed. Used by the booking steps. |
 | Account menu (Andrew) | `src/components/AccountMenu.jsx` | The initials circle in the header. Opens a menu with the user's name, My bookings and Sign out. `Layout` renders it. |
-| Phone tab bar (Andrew) | `src/components/MobileTabBar.jsx` | Below `md`, fixed to the bottom: Today, Availability, Rooms, Book, My bookings (the header's places, same names). `Layout` renders it and pads the page so nothing hides under it. Adapted from 21st.dev/@shadcnui-blocks/tabs-08. |
+| Phone tab bar (Andrew) | `src/components/MobileTabBar.jsx` | Below `md`, fixed to the bottom: Today, Book a room, My bookings (the header's places, same names). `Layout` renders it and pads the page so nothing hides under it. Adapted from 21st.dev/@shadcnui-blocks/tabs-08. |
 | Time picker (Andrew) | `src/components/TimeSlotPicker.jsx`, `halfHourSlots` in `src/lib/bookingForm.js` | In the booking form: every half hour of the chosen room and day as a button, taken and past ones struck through; a tap sets From and To. Adapted from 21st.dev/@klyv-ui/time-slot-picker. |
-| Click-to-book (Elio's timeline) | `bookRoomId` on `DayTimeline`, maths in `src/lib/quickBook.js` | `<DayTimeline … bookRoomId={room.id} />` makes free time clickable: a popover offers "Book 14:00 to 16:00" and opens the form filled in. On phones each free hour is a link. Used on Today and Room detail. Adapted from 21st.dev/@pearpages/popover. |
-| Busy hours (Elio's floor page) | `src/components/BusyHours.jsx`, counts in `src/lib/busyHours.js` | `<BusyHours bookings={bookings} />`: weekdays by hours, darker when more rooms were booked, with the busiest time in words. On The floor. Adapted from 21st.dev/@starc007/heat-calendar. |
+| Click-to-book (Elio's timeline) | `bookRoomId` on `DayTimeline`, maths in `src/lib/quickBook.js` | `<DayTimeline … bookRoomId={room.id} />` makes free time clickable: a popover offers "Book 14:00 to 16:00" and opens the booking steps on that day and those hours. On phones each free hour is a link. Used on Room detail. Adapted from 21st.dev/@pearpages/popover. |
 | Icons (Andrew) | `src/components/Icon.jsx` | `import { Clock } from 'lucide-react'`, then `<Icon icon={Clock} />` (20 px) or `<Icon icon={Clock} size="sm" />` (16 px). Always through `Icon`, so every icon is outline, 1.5 stroke and the text colour. Inside a `buttonClass` button, put it before the words; the button already spaces them. |
 | Room status words (Elio) | `src/lib/roomStatus.js` | `roomStatus(room, bookings, date, currentUser)` returns `{ word, tone }` for a chip, e.g. `Free all day`, `Free from 15:00`, `Free until 17:00`, `Two gaps`, `Fully booked`, `Yours until 16:00`, `Out of service`; `null` for a day that is over. Only what is ahead of now counts. Draw it as `<span className={statusChipClass(status.tone)}>{status.word}</span>`. |
 | Ghurfa colours and fonts | `src/index.css`, fonts in `src/assets/fonts/` | The design pack's skin, as given. Colours: `paper` (page), `surface` (cards and fields), `ink`, `muted`, `line`, `brand-50` to `brand-900` (navy) and `accent-50` to `accent-900` (ochre), so `bg-paper`, `text-muted`, `border-line`, `bg-brand-800` and so on. Fonts: `font-display` (Fraunces, for headings and room names) and `font-body` (IBM Plex Sans, the default). Use these names instead of fixed colours, so the skin changes in one place. |
@@ -148,9 +145,7 @@ Everything below is used by several surfaces. Change it only after telling the t
 - `src/lib/roomStatus.test.js`: each status word (the pack's rooms B-204, B-206 and C-101), bookings that are over or cancelled, who is looking, a later day, out of service, and a day that is over.
 - `src/lib/roomDetail.test.js`: the Room detail week (Monday to Sunday, `?week=` read safely), the signed-in user's next booking of a room, and how its day is written.
 - `src/lib/quickBook.test.js`: click-to-book on a timeline: the free stretch around a click, the offer (from the half hour clicked, never before now, two hours at most) and nothing when under half an hour is left.
-- `src/lib/busyHours.test.js`: busy hours by weekday and hour, cancelled bookings left out, and the busiest cell.
 - `src/lib/today.test.js`: Today's opening hours, which rooms are free right now (a booking ending this minute no longer counts), the two-hour and whole-day windows cut to 08:00-22:00, which rooms each list shows (your own booking keeps a room on your list only), and the headline in words.
-- `src/lib/floor.test.js`: The floor's list of floors, the floor read from the address (a missing or bad one opens the first floor), the rooms on a floor, and its title and room count.
 
 ## Run it locally
 

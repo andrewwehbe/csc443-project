@@ -45,7 +45,7 @@ export default function MyBookingsPage({ rooms, bookings, currentUser, simulatio
   } else if (status === 'error') {
     content = <ErrorState title="Your bookings would not load" message="The server did not answer. This usually passes in a moment." onRetry={retry} />;
   } else if (status === 'empty') {
-    content = <EmptyState title="You have no rooms booked" message="Rooms you book appear here, soonest first." action={<Link to="/availability" className={buttonClass('primary', 'small')}>Find a room</Link>} />;
+    content = <EmptyState title="You have no rooms booked" message="Rooms you book appear here, soonest first." action={<Link to="/explore" className={buttonClass('primary', 'small')}>Find a room</Link>} />;
   } else {
     content = (
       <>

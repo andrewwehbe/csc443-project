@@ -35,7 +35,7 @@ export default function RoomPage({ rooms, bookings, currentUser, simulation, can
       <EmptyState
         title="Room not found"
         message="There is no study room at this address."
-        action={<Link to="/rooms" className={secondary}>See all rooms</Link>}
+        action={<Link to="/explore" className={secondary}>See all rooms</Link>}
       />
     );
   }
@@ -178,7 +178,7 @@ function ActionBand({ room, bookings, currentUser, cancelBooking }) {
         {today ? `${today.word} today.` : 'Closed for the rest of today.'}
       </span>
       <span className="flex-1" />
-      <Link to={`/bookings/new?room=${room.id}`} className={primary}>Book this room</Link>
+      <Link to="/explore" className={primary}>Book this room</Link>
     </div>
   );
 }

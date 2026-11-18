@@ -70,7 +70,10 @@ export default function DayTimeline({ bookings, date, currentUser, chosen = null
     const range = stretch && quickRange(stretch, minute, nowMinute);
     setOffer(range ? { left: share * 100, ...range, ...stretch } : null);
   }
-  const bookHref = (start, end) => `/bookings/new?room=${bookRoomId}&date=${date}&start=${clock(start)}&end=${clock(end)}`;
+  const bookHref = (start, end) => {
+    const hours = Array.from({ length: Math.ceil(end / 60) - Math.floor(start / 60) }, (_, i) => Math.floor(start / 60) + i);
+    return `/explore?days=${date}&hours=${hours.join(',')}&view=library`;
+  };
 
   return (
     <div>

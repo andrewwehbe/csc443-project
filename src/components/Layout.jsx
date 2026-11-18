@@ -11,8 +11,7 @@ import Logo, { LogoMark } from './Logo.jsx';
 // The same four places as the phone's tab bar (MobileTabBar), with the same names.
 const links = [
   { to: '/', label: 'Today' },
-  { to: '/availability', label: 'Availability' },
-  { to: '/rooms', label: 'Rooms' },
+  { to: '/explore', label: 'Book a room' },
   { to: '/my-bookings', label: 'My bookings' },
 ];
 
@@ -20,8 +19,7 @@ const links = [
 // My bookings. Booking and Sign in light none: the Book a room button is where you are.
 function section(pathname) {
   if (pathname === '/') return '/';
-  if (pathname.startsWith('/availability')) return '/availability';
-  if (pathname.startsWith('/rooms')) return '/rooms';
+  if (pathname === '/explore') return '/explore';
   if (pathname.startsWith('/my-bookings')) return '/my-bookings';
   return null;
 }
@@ -32,10 +30,12 @@ export default function Layout({ users, currentUser, onUserChange, simulation, o
   const { pathname } = useLocation();
   const current = section(pathname);
   const fullBleed = pathname === '/sign-in' || pathname === '/register';
-  const hideBook = pathname === '/' || pathname.startsWith('/rooms/') || pathname.startsWith('/bookings');
+  // The booking steps fill the window exactly from lg up, so nothing scrolls there.
+  const oneScreen = pathname === '/explore';
+  const hideBook = pathname === '/' || oneScreen || pathname.startsWith('/rooms/') || pathname.startsWith('/bookings');
 
   return (
-    <div className="flex min-h-screen flex-col pb-16 md:pb-0">
+    <div className={`flex min-h-screen flex-col pb-16 md:pb-0 ${oneScreen ? 'lg:h-dvh lg:min-h-0 lg:overflow-hidden' : ''}`}>
       <DemoBar
         users={users}
         currentUser={currentUser}
@@ -65,7 +65,7 @@ export default function Layout({ users, currentUser, onUserChange, simulation, o
           <span className="flex-1" />
           {/* The wrapper hides it: on the button itself, inline-flex would win over hidden. Left out where the page
               has its own (Today's hero, a room's Book this room) and on the booking form: one primary button a screen. */}
-          {!hideBook && <span className="hidden sm:block"><Link to="/bookings/new" className={buttonClass('primary', 'small')}><Icon icon={CalendarPlus} size="sm" />Book a room</Link></span>}
+          {!hideBook && <span className="hidden sm:block"><Link to="/explore" className={buttonClass('primary', 'small')}><Icon icon={CalendarPlus} size="sm" />Book a room</Link></span>}
           {currentUser ? (
             <AccountMenu user={currentUser} onSignOut={() => onUserChange(null)} />
           ) : (
@@ -74,11 +74,11 @@ export default function Layout({ users, currentUser, onUserChange, simulation, o
         </div>
       </header>
 
-      <main className={fullBleed ? 'flex w-full flex-1 flex-col' : `${frame} flex-1 py-10`}>
+      <main className={fullBleed ? 'flex w-full flex-1 flex-col' : oneScreen ? `${frame} flex min-h-0 flex-1 flex-col py-5` : `${frame} flex-1 py-10`}>
         <Outlet />
       </main>
 
-      {!fullBleed && (
+      {!fullBleed && !oneScreen && (
         <footer className={`${frame} mt-20 flex items-center gap-2 border-t border-line py-8 text-xs text-muted`}>
           <LogoMark className="h-4 w-4" />
           <span><span className="font-display font-bold tracking-wide text-ink">GHURFA</span> · CSC443 Web Programming · Fall 2026 · Team Not_vibeCoding</span>

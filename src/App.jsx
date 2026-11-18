@@ -1,15 +1,13 @@
 import { useState } from 'react';
-import { Routes, Route } from 'react-router';
+import { Navigate, Routes, Route } from 'react-router';
 import Layout from './components/Layout.jsx';
 import HomePage from './pages/HomePage.jsx';
 import NotFoundPage from './pages/NotFoundPage.jsx';
-import NewBookingPage from './pages/NewBookingPage.jsx';
 import EditBookingPage from './pages/EditBookingPage.jsx';
 import MyBookingsPage from './pages/MyBookingsPage.jsx';
 import RoomPage from './pages/RoomPage.jsx';
-import FloorPage from './pages/FloorPage.jsx';
-import AvailabilityPage from './pages/AvailabilityPage.jsx';
 import HistoryPage from './pages/HistoryPage.jsx';
+import ExplorePage from './pages/ExplorePage.jsx';
 import SignInPage from './pages/SignInPage.jsx';
 import RegisterPage from './pages/RegisterPage.jsx';
 import { rooms } from './data/rooms.js';
@@ -66,7 +64,8 @@ export default function App() {
       >
         <Route index element={<HomePage {...shared} />} />
         {/* Andrew: 05 Book a room (new and edit) and 06 My bookings */}
-        <Route path="bookings/new" element={<NewBookingPage {...shared} addBooking={addBooking} />} />
+        {/* Booking is one flow, at /explore (day, time, room). The old booking addresses lead there. */}
+        <Route path="bookings/new" element={<Navigate to="/explore" replace />} />
         <Route path="bookings/:bookingId/edit" element={<EditBookingPage {...shared} updateBooking={updateBooking} />} />
         <Route path="my-bookings" element={<MyBookingsPage {...shared} cancelBooking={cancelWithUndo} />} />
         {/* 07 History and 08 Sign in / register */}
@@ -74,10 +73,11 @@ export default function App() {
         <Route path="sign-in" element={<SignInPage users={userList} onUserChange={setCurrentUser} />} />
         <Route path="register" element={<RegisterPage users={userList} onRegister={registerUser} />} />
         {/* Elio: Room detail and The floor */}
-        <Route path="rooms" element={<FloorPage {...shared} />} />
+        <Route path="rooms" element={<Navigate to="/explore" replace />} />
         <Route path="rooms/:roomId" element={<RoomPage {...shared} cancelBooking={cancelWithUndo} />} />
         {/* Njteh: Availability */}
-        <Route path="availability" element={<AvailabilityPage {...shared} />} />
+        <Route path="availability" element={<Navigate to="/explore" replace />} />
+        <Route path="explore" element={<ExplorePage {...shared} addBooking={addBooking} />} />
         {/* The other surfaces go here, on the paths in the README's route table.
             cancelBooking goes to the screens that have a Cancel button. */}
         <Route path="*" element={<NotFoundPage />} />

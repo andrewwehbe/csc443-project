@@ -11,6 +11,16 @@ export const users = [
   { id: 'u8', name: 'Tarek Mansour', email: 'tarek.mansour@lau.edu', studentId: '202405708' },
 ];
 
+// The rest of the students. They book rooms too (src/data/bookings.js, busyWeek), so the library looks as busy
+// as a real week, but they are not demo accounts: the demo bar and Sign in list only `users` above.
+// Only their ids appear in bookings, and other people's names are never shown anywhere in the app.
+export const otherStudents = Array.from({ length: 80 }, (_, i) => ({
+  id: `s${i + 1}`,
+  name: `Student ${i + 1}`,
+  email: `student${i + 1}@lau.edu`,
+  studentId: String(202400000 + i + 1),
+}));
+
 export function findUser(id) {
-  return users.find((user) => user.id === id) ?? null;
+  return users.find((user) => user.id === id) ?? otherStudents.find((user) => user.id === id) ?? null;
 }

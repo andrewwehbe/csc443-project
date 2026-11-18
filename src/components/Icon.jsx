@@ -3,7 +3,7 @@
 // Use: import { Clock } from 'lucide-react';  <Icon icon={Clock} />  or  <Icon icon={Clock} size="sm" />
 // Icons are decoration: the words next to them carry the meaning, so screen readers skip them.
 
-const SIZES = { sm: 16, md: 20 };
+const SIZES = { sm: 16, md: 20, lg: 28 };   // lg: a lone icon that is the whole message, like the padlock on a day you cannot book
 
 export default function Icon({ icon: LucideIcon, size = 'md', className = '' }) {
   return <LucideIcon size={SIZES[size]} strokeWidth={1.5} aria-hidden="true" className={`shrink-0 ${className}`} />;
