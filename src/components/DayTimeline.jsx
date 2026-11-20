@@ -14,8 +14,12 @@ import { isOwner } from '../lib/ownership.js';
 // hours       show the 08 … 21 header above the bar (default true)
 // legend      show the colour key under the bar (default false)
 // label       a name for the day, e.g. "B-204 · Wednesday": heading of the phone list and the screen-reader list
+// compact     keep the bar on phones too, instead of the list of hours (default false)
 // From md up it is a bar; below md a list of hours, because a 14-hour bar is unreadable on a phone and
-// nothing may scroll sideways. Screen readers get a plain list of the bookings, never colours alone.
+// nothing may scroll sideways. A screen that stacks one timeline per room (Today) passes `compact`: there
+// 14 hour rows per room would make the page several screens long, so each room keeps one bar, as in the
+// design pack's 01-today.html. The bar never overflows, and its times stay in the title and the
+// screen-reader list. Screen readers get a plain list of the bookings, never colours alone.
 
 const segmentClass = 'flex h-full items-center justify-center overflow-hidden rounded-[1px] px-1 text-[11px] font-medium leading-none';
 const kindClass = {
@@ -36,7 +40,7 @@ const rowClass = {
 const rowWord = { free: 'Free', booked: 'Booked', yours: 'Yours', chosen: 'Being chosen', clash: 'Clashes' };
 const HOURS = ['08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21'];
 
-export default function DayTimeline({ bookings, date, currentUser, chosen = null, clash = false, hours = true, legend = false, label }) {
+export default function DayTimeline({ bookings, date, currentUser, chosen = null, clash = false, hours = true, legend = false, label, compact = false }) {
   // Only the day's bookings that hold the room. Completed ones still held it, so they stay.
   const blocks = bookings
     .filter((b) => b.status !== 'cancelled' && dateKey(b.start) === date)
@@ -47,8 +51,8 @@ export default function DayTimeline({ bookings, date, currentUser, chosen = null
 
   return (
     <div>
-      {/* From md up: the bar. Hidden from screen readers, which get the list after it. */}
-      <div className="hidden md:block">
+      {/* From md up (at every width when compact): the bar. Hidden from screen readers, which get the list after it. */}
+      <div className={compact ? '' : 'hidden md:block'}>
         <div aria-hidden="true">
           {hours && (
             <div className="flex">
@@ -92,20 +96,22 @@ export default function DayTimeline({ bookings, date, currentUser, chosen = null
         <TimelineText blocks={blocks} chosen={overlay && { ...chosen, kind: overlayKind }} label={label} />
       </div>
 
-      {/* Below md: one row per hour. */}
-      <div className="md:hidden">
-        {label && <p className="mb-3 font-display text-base font-semibold text-ink">{label}</p>}
-        <ul className="space-y-1">
-          {hourRows(blocks, overlay && { ...chosen, clash }).map((row) => (
-            <li key={row.hour} className="flex items-stretch gap-2">
-              <span className="w-11 flex-none pt-1 font-mono text-[11px] tabular-nums text-muted">{row.hour}</span>
-              <span className={`flex-1 rounded-[2px] px-2 py-1.5 text-xs ${rowClass[row.kind]}`}>
-                {rowWord[row.kind]}{row.until && ` · until ${row.until}`}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </div>
+      {/* Below md: one row per hour, unless compact. */}
+      {!compact && (
+        <div className="md:hidden">
+          {label && <p className="mb-3 font-display text-base font-semibold text-ink">{label}</p>}
+          <ul className="space-y-1">
+            {hourRows(blocks, overlay && { ...chosen, clash }).map((row) => (
+              <li key={row.hour} className="flex items-stretch gap-2">
+                <span className="w-11 flex-none pt-1 font-mono text-[11px] tabular-nums text-muted">{row.hour}</span>
+                <span className={`flex-1 rounded-[2px] px-2 py-1.5 text-xs ${rowClass[row.kind]}`}>
+                  {rowWord[row.kind]}{row.until && ` · until ${row.until}`}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {legend && <TimelineLegend />}
     </div>

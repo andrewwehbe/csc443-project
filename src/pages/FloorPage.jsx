@@ -114,7 +114,7 @@ function RoomCard({ room, bookings, currentUser }) {
             </div>
           </div>
         ) : (
-          <DayTimeline bookings={bookings.filter((b) => b.roomId === room.id)} date={today} currentUser={currentUser} hours={false} label="Today" />
+          <DayTimeline bookings={bookings.filter((b) => b.roomId === room.id)} date={today} currentUser={currentUser} hours={false} label="Today" compact />
         )}
       </div>
     </Link>

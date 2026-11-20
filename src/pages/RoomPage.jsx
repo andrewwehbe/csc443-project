@@ -91,25 +91,26 @@ export default function RoomPage({ rooms, bookings, currentUser, simulation, can
         </div>
 
         <div className="mt-4 border border-line bg-surface p-5">
-          <div className="hidden items-center gap-3 md:flex" aria-hidden="true">
-            <span className="w-14 flex-none" />
+          <div className="flex items-center gap-2 md:gap-3" aria-hidden="true">
+            <span className="w-12 flex-none md:w-14" />
             <div className="flex min-w-0 flex-1">
               {HOURS.map((hour) => (
                 <div key={hour} className="flex-1 border-l border-line pl-1 font-mono text-[10px] tabular-nums text-muted/70">{hour}</div>
               ))}
             </div>
           </div>
-          <div className="mt-1 space-y-6 md:space-y-2">
+          <div className="mt-1 space-y-2">
             {days.map((day, i) => (
-              <div key={day} className="md:flex md:items-start md:gap-3">
+              <div key={day} className="flex items-start gap-2 md:gap-3">
                 {/* Lined up with the bar (h-8), not centred on the whole block: the last day also holds the legend. */}
-                <span className="hidden h-8 w-14 flex-none items-center font-mono text-xs tabular-nums text-muted md:flex" aria-hidden="true">{dayLabel(day)}</span>
+                <span className="flex h-8 w-12 flex-none items-center font-mono text-xs tabular-nums text-muted md:w-14" aria-hidden="true">{dayLabel(day)}</span>
                 <div className="min-w-0 flex-1">
                   <DayTimeline
                     bookings={roomBookings}
                     date={day}
                     currentUser={currentUser}
                     hours={false}
+                    compact
                     legend={i === days.length - 1}
                     label={`${data.name} · ${dayLabel(day)}`}
                   />
