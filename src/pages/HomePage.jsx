@@ -134,7 +134,8 @@ function RoomRow({ room, bookings, today, now, currentUser }) {
         {status && <span className={statusChipClass(status.tone)}>{status.word}</span>}
       </div>
       <div className="mt-3">
-        <DayTimeline bookings={roomBookings} date={today} currentUser={currentUser} />
+        {/* compact: one bar per room on phones too, as in the pack, not 14 hour rows per room. */}
+        <DayTimeline bookings={roomBookings} date={today} currentUser={currentUser} compact />
       </div>
       {nothingBooked && <p className="mt-1.5 text-xs text-muted">Nothing booked today.</p>}
     </li>
