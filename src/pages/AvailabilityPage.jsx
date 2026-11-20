@@ -11,6 +11,9 @@ import {
   readFilters,
   shiftDay,
 } from '../lib/availabilityFilters.js';
+import { roomStatus, statusChipClass } from '../lib/roomStatus.js';
+import { dateKey } from '../lib/time.js';
+import DayTimeline, { TimelineLegend } from '../components/DayTimeline.jsx';
 import LoadingState from '../components/states/LoadingState.jsx';
 import EmptyState from '../components/states/EmptyState.jsx';
 import ErrorState from '../components/states/ErrorState.jsx';
@@ -121,7 +124,7 @@ function MatchToggle({ exact, onChange }) {
 }
 
 // Surface: 02 Availability, at /availability. Owner: Njteh Balian.
-export default function AvailabilityPage({ rooms, simulation }) {
+export default function AvailabilityPage({ rooms, bookings, currentUser, simulation }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const filters = readFilters(searchParams);
   const { status, data, retry } = useSimulatedRequest(rooms, simulation);
@@ -166,19 +169,14 @@ export default function AvailabilityPage({ rooms, simulation }) {
     );
   } else {
     content = (
-      <ul className="space-y-3">
-        {matches.map((room) => (
-          <li key={room.id} className="border border-line bg-surface px-5 py-4">
-            <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-              <h2 className="font-display text-lg font-semibold tracking-tight text-ink">
-                <Link to={`/rooms/${room.id}`}>{room.name}</Link>
-              </h2>
-              <p className="text-xs text-muted">{[`${room.capacity} people`, room.amenities.join(', ')].filter(Boolean).join(' · ')}</p>
-            </div>
-            {/* DayTimeline for filters.date goes here once it's on main (Notion #5). */}
-          </li>
-        ))}
-      </ul>
+      <>
+        <ul className="space-y-3">
+          {matches.map((room) => (
+            <RoomRow key={room.id} room={room} bookings={bookings} date={filters.date} currentUser={currentUser} />
+          ))}
+        </ul>
+        <TimelineLegend />
+      </>
     );
   }
 
@@ -250,5 +248,30 @@ export default function AvailabilityPage({ rooms, simulation }) {
         {content}
       </div>
     </section>
+  );
+}
+
+// One room on the chosen day: name (the whole card links to it), size, status word and timeline.
+function RoomRow({ room, bookings, date, currentUser }) {
+  const roomBookings = bookings.filter((b) => b.roomId === room.id);
+  const status = roomStatus(room, bookings, date, currentUser);
+  const nothingBooked = !roomBookings.some((b) => b.status !== 'cancelled' && dateKey(b.start) === date);
+
+  return (
+    <li className="relative border border-line bg-surface px-5 py-4">
+      <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+        <h2 className="font-display text-lg font-semibold tracking-tight text-ink">
+          {/* after:inset-0 stretches the link over the card, so the whole card opens the room. */}
+          <Link to={`/rooms/${room.id}`} className="after:absolute after:inset-0">{room.name}</Link>
+        </h2>
+        <p className="text-xs text-muted">{[`${room.capacity} people`, room.amenities.join(', ')].filter(Boolean).join(' · ')}</p>
+        <span className="flex-1" />
+        {status && <span className={statusChipClass(status.tone)}>{status.word}</span>}
+      </div>
+      <div className="mt-3">
+        <DayTimeline bookings={roomBookings} date={date} currentUser={currentUser} label={room.name} compact />
+      </div>
+      {nothingBooked && <p className="mt-1.5 text-xs text-muted">Nothing booked.</p>}
+    </li>
   );
 }
