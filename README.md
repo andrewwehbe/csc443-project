@@ -1,6 +1,6 @@
 # Study Room Booking
 
-CSC443 Web Programming, Fall 2026, Section 31. Phase 1 (front end) is due Monday 9 November 2026 at 23:59.
+CSC443 Web Programming, Fall 2026, Section 31. Phase 1 (front end) is submitted by Sunday 22 November 2026 at 23:59. Phase 2 (MongoDB Atlas with Mongoose, API on Render) is due Monday 7 December 2026 at 23:59.
 
 **Live site:** https://andrewwehbe.github.io/csc443-project/
 
@@ -71,7 +71,7 @@ Each member owns two surfaces (a surface is a screen with its own route). We fol
 | Njteh Balian | 01 Today (`/`), 02 Availability (`/availability`) | `src/pages/HomePage.jsx`, `src/lib/today.js` and its test, `src/pages/AvailabilityPage.jsx`, `src/lib/availabilityFilters.js` and its test |
 | Elio El Koussa | 03 Room detail (`/rooms/:roomId`), 04 The floor (`/rooms`) | `src/pages/RoomPage.jsx`, `src/lib/roomDetail.js` and its test, `src/pages/FloorPage.jsx`, `src/lib/floor.js` and its test. Also the shared day timeline and room status words (see Shared code) |
 | Andrew Wehbe | 05 Book a room (`/bookings/new`, and `/bookings/:bookingId/edit` to change a saved booking), 06 My bookings (`/my-bookings`) | `src/pages/NewBookingPage.jsx`, `src/pages/EditBookingPage.jsx`, `src/pages/MyBookingsPage.jsx`, `src/components/BookingForm.jsx`, `src/components/Field.jsx`, `src/lib/bookingForm.js` and its test, `src/lib/buttons.js`, `src/hooks/useUnsavedChangesWarning.js` |
-| Marc Hebbo | 07 History (`/my-bookings/history`), 08 Sign in and register (`/sign-in`, `/register`) | to come |
+| Marc Hebbo | 07 History (`/my-bookings/history`), 08 Sign in and register (`/sign-in`, `/register`) | `src/pages/HistoryPage.jsx`, `src/pages/SignInPage.jsx`, `src/pages/RegisterPage.jsx`, `src/components/AuthStage.jsx` |
 
 Shared files: `src/main.jsx` (router), `src/App.jsx` (routes), `src/components/Layout.jsx` (the Ghurfa header and footer around every screen; as in the pack, Today and Book a room light the Availability link, History lights My bookings, and below `md` the links hide). Andrew also wrote the shared code listed below.
 
@@ -132,6 +132,7 @@ Everything below is used by several surfaces. Change it only after telling the t
 - `src/lib/timeline.js`'s test: segment and gap widths (matching the design pack), clipping to 08:00-22:00, the overlay position of a chosen time or clash, and the hour-by-hour list used on phones.
 - `src/lib/roomStatus.test.js`: each status word (the pack's rooms B-204, B-206 and C-101), bookings that are over or cancelled, who is looking, a later day, out of service, and a day that is over.
 - `src/lib/roomDetail.test.js`: the Room detail week (Monday to Sunday, `?week=` read safely), the signed-in user's next booking of a room, and how its day is written.
+- `src/lib/availabilityFilters.test.js`: Availability's filters read from and written to the address (date, capacity, amenities; a bad value falls back), capacity as a minimum or exact, every ticked amenity required, and days moving across month and year ends.
 - `src/lib/today.test.js`: Today's opening hours, which rooms are free right now (a booking ending this minute no longer counts), the two-hour and whole-day windows cut to 08:00-22:00, which rooms each list shows (your own booking keeps a room on your list only), and the headline in words.
 - `src/lib/floor.test.js`: The floor's list of floors, the floor read from the address (a missing or bad one opens the first floor), the rooms on a floor, and its title and room count.
 
@@ -156,6 +157,7 @@ Then open the address Vite prints (http://localhost:5173/csc443-project/).
 - Work on a branch named after the change, for example `rooms-list` or `booking-detail`.
 - Commit messages say what changed and why, for example `Add building and floor filters kept in the URL`. Never just `fix` or `update`.
 - Open a pull request into `main`; merge it once it runs.
+- Each member commits their own work from their own GitHub account. Never commit a teammate's work for them. `git config user.email` must match the email on your GitHub account, or the commits do not show under your name.
 
 ```bash
 git checkout main
